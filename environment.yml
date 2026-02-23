@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.12
 
+  - ruamel.yaml
   # e outros pacotes
   - pip
   - pip:
