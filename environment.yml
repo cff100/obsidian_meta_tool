@@ -1,0 +1,14 @@
+name: obsidian_meta_tool_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+
+  # e outros pacotes
+  - pip
+  - pip:
+    - -e .
+    - pytest
+    - pytest-cov
+    # outros pacotes pip que você usa
+

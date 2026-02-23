@@ -1,0 +1,22 @@
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "obsidian_meta_tool"
+version = "0.1.0"
+description = "Projeto para permitir manipular minhas notas do obsidian de forma que não tenho acesso diretamente pelo app"
+authors = [{ name = "Caio Felix" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.pytest]
+addopts = ["-ra", "--cov=src", "--cov-report=term-missing", "--cov-report=html"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
