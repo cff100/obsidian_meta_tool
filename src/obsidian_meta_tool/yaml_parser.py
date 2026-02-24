@@ -1,53 +1,71 @@
 from pathlib import Path
-from typing import Optional
-
+from typing import Optional, Dict, Any
 from ruamel.yaml import YAML
 
+# ----------------------------
+# Extração do frontmatter
+# ----------------------------
+
 def extract_frontmatter(path: Path) -> Optional[str]:
-    
-    with open(path, "r",encoding="utf-8") as file:
+    """
+    Extrai o bloco YAML (frontmatter) de um arquivo Markdown.
+    Retorna None se não houver frontmatter válido.
+    """
+    with path.open("r", encoding="utf-8") as file:
         lines = file.readlines()
-        
-        if not lines or lines[0].strip() != "---":
-            return None
-        
-        for i in range(1, len(lines)):
-            if lines[i].strip() == "---":
-                return "".join(lines[1:i])
-            
+
+    if not lines or lines[0].strip() != "---":
+        return None
+
+    for i in range(1, len(lines)):
+        if lines[i].strip() == "---":
+            return "".join(lines[1:i])
+
     return None
 
 
-def create_yaml_object(frontmatter: Optional[str]) -> Optional[YAML]:
+# ----------------------------
+# Parsing
+# ----------------------------
 
+def parse_yaml(frontmatter: str) -> Dict[str, Any]:
+    """
+    Converte o frontmatter YAML (string) em dicionário Python.
+    """
+    yaml_parser = YAML(typ="safe")
+    data = yaml_parser.load(frontmatter)
+
+    # Garante que sempre retorne dict
+    return data if isinstance(data, dict) else {}
+
+
+# ----------------------------
+# Orquestração
+# ----------------------------
+
+def yaml_data(path: Path) -> Optional[Dict[str, Any]]:
+    """
+    Retorna os dados YAML de um arquivo Markdown.
+    """
+    frontmatter = extract_frontmatter(path)
     if frontmatter is None:
         return None
-    
-    yaml = YAML(typ="safe")
 
-    return yaml
+    return parse_yaml(frontmatter)
 
 
-def load_yaml(yaml: Optional[YAML], frontmatter: Optional[str]) -> Optional[dict]:
-
-    if not yaml or not frontmatter:
-        return None
-
-    data = yaml.load(frontmatter)
-
-    return data
-
-
-def yaml_data(path: Path) -> Optional[dict]:
-    frontmatter = extract_frontmatter(path)
-    yaml = create_yaml_object(frontmatter)
-    data = load_yaml(yaml, frontmatter)
-
-    return data
-
+# ----------------------------
+# Execução direta
+# ----------------------------
 
 if __name__ == "__main__":
-    path = Path("C:\\Users\\caiof\\Desktop\\Criar código que atua no arquivos do obsidian.md")
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste.md")
+
     data = yaml_data(path)
     print(data)
+
+
+
+
+
 
