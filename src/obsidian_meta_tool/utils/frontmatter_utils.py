@@ -38,4 +38,4 @@ if __name__ == "__main__":
     file_lines_3 = ["--- ", "frontmatter ", "texto", "mais texto "]
     file_lines_4 = [""]
     file_lines_5 = []
-    print(frontmatter_line_numbers(file_lines_8))
+    print(frontmatter_line_numbers(file_lines_4))

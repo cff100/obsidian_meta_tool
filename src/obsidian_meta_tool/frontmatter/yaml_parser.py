@@ -4,19 +4,24 @@ from ruamel.yaml import YAML
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
 
 # ----------------------------
-# Extração do frontmatter
+# Frontmatter extraction
 # ----------------------------
 
-def extract_frontmatter(path: Path): #-> tuple[Optional[str], Optional[int]]:
+def extract_frontmatter(path: Path) -> Optional[str]:
     """
-    Extrai o bloco YAML (frontmatter) de um arquivo Markdown.
-    Retorna None se não houver frontmatter válido.
+    Extracts the YAML (frontmatter) block from a Markdown file via its path.
+    Returns None if there is no valid frontmatter.
     """
     with path.open("r", encoding="utf-8") as file:
         lines = file.readlines()
 
-    start, end = frontmatter_line_numbers(lines)
+    # print(f"Lines: {lines}")
 
+    try:
+        start, end = frontmatter_line_numbers(lines)
+    except:
+        return None
+    
     return "".join(lines[start:end+1])
 
 
@@ -28,8 +33,9 @@ def extract_frontmatter(path: Path): #-> tuple[Optional[str], Optional[int]]:
 
 def parse_yaml(frontmatter: str) -> Dict[str, Any]:
     """
-    Converte o frontmatter YAML (string) em dicionário Python.
+    Converts the YAML frontmatter (string) into a Python dictionary.
     """
+
     yaml_parser = YAML(typ="safe")
     data = yaml_parser.load(frontmatter)
 
@@ -38,13 +44,14 @@ def parse_yaml(frontmatter: str) -> Dict[str, Any]:
 
 
 # ----------------------------
-# Orquestração
+# Orchestration
 # ----------------------------
 
 def yaml_data(path: Path) -> Optional[Dict[str, Any]]:
     """
-    Retorna os dados YAML de um arquivo Markdown.
+    Returns the YAML data from a Markdown file.
     """
+
     frontmatter = extract_frontmatter(path)
     if frontmatter is None:
         return None
@@ -53,19 +60,21 @@ def yaml_data(path: Path) -> Optional[Dict[str, Any]]:
 
 
 # ----------------------------
-# Execução direta
+# Direct execution
 # ----------------------------
 
 if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste.md")
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_1.md")
 
-    # data = yaml_data(path)
+
+    # frontmatter = extract_frontmatter(path)
+    # print(frontmatter)
+
+    # data = parse_yaml(frontmatter)
     # print(data)
 
-    frontmatter = extract_frontmatter(path)
-    print(frontmatter)
-    # print(i)
-
+    data = yaml_data(path)
+    print(f"Yaml_data: {data}")
 
 
 
