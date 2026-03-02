@@ -1,13 +1,17 @@
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Dict, Any
+
 from ruamel.yaml import YAML
+
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
+
+
 
 # ----------------------------
 # Frontmatter extraction
 # ----------------------------
 
-def extract_frontmatter(path: Path) -> Optional[str]:
+def extract_frontmatter(path: Path) -> str:
     """
     Extracts the YAML (frontmatter) block from a Markdown file via its path.
     Returns None if there is no valid frontmatter.
@@ -17,13 +21,8 @@ def extract_frontmatter(path: Path) -> Optional[str]:
 
     # print(f"Lines: {lines}")
 
-    try:
-        start, end = frontmatter_line_numbers(lines)
-    except:
-        return None
-    
+    start, end = frontmatter_line_numbers(lines)
     return "".join(lines[start:end+1])
-
 
 
 
@@ -39,7 +38,6 @@ def parse_yaml(frontmatter: str) -> Dict[str, Any]:
     yaml_parser = YAML(typ="safe")
     data = yaml_parser.load(frontmatter)
 
-    # Garante que sempre retorne dict
     return data if isinstance(data, dict) else {}
 
 
@@ -47,15 +45,12 @@ def parse_yaml(frontmatter: str) -> Dict[str, Any]:
 # Orchestration
 # ----------------------------
 
-def yaml_data(path: Path) -> Optional[Dict[str, Any]]:
+def yaml_data(path: Path) -> Dict[str, Any]:
     """
     Returns the YAML data from a Markdown file.
     """
 
     frontmatter = extract_frontmatter(path)
-    if frontmatter is None:
-        return None
-
     return parse_yaml(frontmatter)
 
 
@@ -64,7 +59,7 @@ def yaml_data(path: Path) -> Optional[Dict[str, Any]]:
 # ----------------------------
 
 if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_1.md")
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_2.md")
 
 
     # frontmatter = extract_frontmatter(path)

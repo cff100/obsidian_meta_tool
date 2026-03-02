@@ -8,7 +8,7 @@ categorias:
 objetivo_tipos:
   - "[[Objetivos originais]]"
 impacto: 3
-progresso_por_foco: 10
+progresso_por_foco: 10.5
 prazo:
 fazer:
 status:
