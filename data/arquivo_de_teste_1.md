@@ -17,6 +17,7 @@ status:
 progresso: 10
 modified: 2026-02-23T13:11:13
 created: 2026-02-23T13:10:01
+dia: 2026-03-03
 ---
 
 ```bash

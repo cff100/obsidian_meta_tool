@@ -59,7 +59,7 @@ def yaml_data(path: Path) -> Dict[str, Any]:
 # ----------------------------
 
 if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_2.md")
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_1.md")
 
 
     # frontmatter = extract_frontmatter(path)
