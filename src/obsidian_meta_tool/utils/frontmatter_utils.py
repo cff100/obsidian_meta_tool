@@ -15,18 +15,18 @@ def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
                 break
 
     if start == None or end == None or end < start:
-        raise ValueError("Não há frontmatter neste arquivo")
+        raise ValueError("There is no frontmatter in this file.")
         
 
     return start, end
         
 
 def file_has_lines(file_lines: list[str]) -> bool:
-    return len(file_lines) != 0
+    return bool(file_lines)
 
 def check_no_lines_error(file_lines: list[str]):
     if not file_has_lines(file_lines):
-        raise ValueError("O arquivo não possui linhas para processar.")
+        raise ValueError("The file has no lines to process.")
     
 
 if __name__ == "__main__":
