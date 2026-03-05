@@ -1,6 +1,6 @@
 import pytest
 
-from obsidian_meta_tool.utils.frontmatter_utils import file_has_lines, check_no_lines_error
+from obsidian_meta_tool.utils.frontmatter_utils import file_has_lines, check_no_lines_error, frontmatter_line_numbers
 
 list_with_lines = ["one", "two", "three lines"]
 list_with_blank_lines = ["",""]
@@ -31,3 +31,6 @@ class TestCheckNoLinesError:
         print(f"\n      The error message captured was: '{excinfo.value}'")
 
 
+# class TestFrontmatterLineNumbers:
+
+    

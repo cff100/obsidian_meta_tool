@@ -1,32 +1,75 @@
+from typing import Optional
+
 
 def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
- 
+    """
+    :param file_lines: A list whose elements are the lines of a file.
+    :type file_lines: list[str]
+    :return: Index of the start and end lines, respectively, of the frontmatter (does not consider the '---' markers)
+    :rtype: tuple[int, int]
+    """
     check_no_lines_error(file_lines)
+    fm_start = frontmatter_start(file_lines)
+    fm_end = frontmatter_end(file_lines)
+    
+    if fm_end == None:
+        raise ValueError("The front matter of this file is not properly closed.")
+    if fm_end < fm_start:
+        raise ValueError("The frontmatter is empty (No values between the markers '---').")
 
-    start = None
-    end = None
-    for i, line in enumerate(file_lines):
+    return fm_start, fm_end
 
-        if line.strip() == "---":
-            if start == None:
-                start = i + 1
-            else:
-                end = i - 1
-                break
-
-    if start == None or end == None or end < start:
-        raise ValueError("There is no frontmatter in this file.")
-        
-
-    return start, end
-        
-
-def file_has_lines(file_lines: list[str]) -> bool:
-    return bool(file_lines)
 
 def check_no_lines_error(file_lines: list[str]):
+    """
+    :param file_lines: A list whose elements are the lines of a file.
+    :type file_lines: list[str]
+    """
+    
     if not file_has_lines(file_lines):
         raise ValueError("The file has no lines to process.")
+    
+
+
+def frontmatter_start(file_lines: list[str]) -> int:
+    """
+    :param file_lines: A list whose elements are the lines of a file.
+    :type file_lines: list[str]
+    :return: Index of the frontmatter start line (after the '---' marker)
+    :rtype: int
+    """
+    if file_lines[0] != "---":
+        raise ValueError("There is no frontmatter in this file.")
+    else:
+        start = 1
+    return start
+
+
+def frontmatter_end(file_lines: list[str]) -> Optional[int]:
+    """
+    :param file_lines: A list whose elements are the lines of a file.
+    :type file_lines: list[str]
+    :return: Index of the frontmatter end line (before the '---' marker)
+    :rtype: int
+    """
+    for i, line in enumerate(file_lines[1:]):
+        if line.strip() == "---":
+            end = i - 1
+            return end
+    return None
+
+
+def file_has_lines(file_lines: list[str]) -> bool:
+    """
+    Docstring para file_has_lines
+
+    :param file_lines: A list whose elements are the lines of a file.
+    :type file_lines: list[str]
+    :return: `True` if the `file_lines` list has elements, that is, if the file has lines.
+    :rtype: bool
+    """
+
+    return bool(file_lines)
     
 
 if __name__ == "__main__":
