@@ -38,6 +38,8 @@ def frontmatter_start(file_lines: list[str]) -> int:
     :return: Index of the frontmatter start line (after the '---' marker)
     :rtype: int
     """
+    if not file_has_lines(file_lines):
+        raise ValueError("The file has no lines to process.")
     if file_lines[0] != "---":
         raise ValueError("There is no frontmatter in this file.")
     else:
