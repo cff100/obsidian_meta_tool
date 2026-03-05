@@ -12,7 +12,7 @@ def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     fm_start = frontmatter_start(file_lines)
     fm_end = frontmatter_end(file_lines)
     
-    if fm_end == None:
+    if fm_end is None:
         raise ValueError("The front matter of this file is not properly closed.")
     if fm_end < fm_start:
         raise ValueError("The frontmatter is empty (No values between the markers '---').")
@@ -38,8 +38,8 @@ def frontmatter_start(file_lines: list[str]) -> int:
     :return: Index of the frontmatter start line (after the '---' marker)
     :rtype: int
     """
-    if not file_has_lines(file_lines):
-        raise ValueError("The file has no lines to process.")
+    # if not file_has_lines(file_lines): # This section has been removed for redundancy. This function will likely only be used in the function `frontmatter_line_numbers`, which already checks if the file has lines and raises an error if it doesn't.
+    #     raise ValueError("The file has no lines to process.")
     if file_lines[0] != "---":
         raise ValueError("There is no frontmatter in this file.")
     else:
@@ -56,15 +56,13 @@ def frontmatter_end(file_lines: list[str]) -> Optional[int]:
     """
     for i, line in enumerate(file_lines[1:]):
         if line.strip() == "---":
-            end = i - 1
+            end = i
             return end
     return None
 
 
 def file_has_lines(file_lines: list[str]) -> bool:
     """
-    Docstring para file_has_lines
-
     :param file_lines: A list whose elements are the lines of a file.
     :type file_lines: list[str]
     :return: `True` if the `file_lines` list has elements, that is, if the file has lines.
@@ -73,14 +71,3 @@ def file_has_lines(file_lines: list[str]) -> bool:
 
     return bool(file_lines)
     
-
-if __name__ == "__main__":
-    file_lines_1 = ["--- ", "frontmatter ", " ---", "texto", "mais texto "]
-    file_lines_8 = ["--- ", "frontmatter ", "mais linhas", "de front", " ---", "texto", "---", "mais texto "]
-    file_lines_7 = ["--- ", "frontmatter ", "mais linhas", "de front", " ---", "texto", "mais texto "]
-    file_lines_6 = ["--- ", " ---", "texto", "mais texto "]
-    file_lines_2 = ["frontmatter ", " ---", "texto", "mais texto "]
-    file_lines_3 = ["--- ", "frontmatter ", "texto", "mais texto "]
-    file_lines_4 = [""]
-    file_lines_5 = []
-    print(frontmatter_line_numbers(file_lines_4))
