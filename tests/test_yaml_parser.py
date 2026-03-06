@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 
-from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, parse_yaml, yaml_data
+from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, parse_yaml, retrieve_yaml_data
 
 
 class TestExtractFrontmatter:
@@ -81,7 +81,7 @@ class TestYamlData:
     def test_yaml_data_with_frontmatter(self):
         """Test yaml_data with a file containing frontmatter."""
         path = Path("tests/test_files/common_file_1.md")
-        result = yaml_data(path)
+        result = retrieve_yaml_data(path)
         assert isinstance(result, dict)
         assert "aliases" in result
         assert result["impacto"] == 3
@@ -89,7 +89,7 @@ class TestYamlData:
     def test_yaml_data_empty_file(self):
         """Test yaml_data with an empty file."""
         path = Path("tests/test_files/empty_file.md")
-        result = yaml_data(path)
+        result = retrieve_yaml_data(path)
         assert result == {}
 
     def test_yaml_data_no_frontmatter(self):
@@ -97,7 +97,7 @@ class TestYamlData:
         temp_path = Path("tests/test_files/no_frontmatter.md")
         temp_path.write_text("This is just content.\nNo frontmatter here.")
         try:
-            result = yaml_data(temp_path)
+            result = retrieve_yaml_data(temp_path)
             assert result == {}
         finally:
             temp_path.unlink()

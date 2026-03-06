@@ -88,11 +88,11 @@ def clear_item_not_in_list(data: Dict[str, Any], key: str) -> Dict[str, Any]:
 
 if __name__ == "__main__":
 
-    from obsidian_meta_tool.frontmatter.yaml_parser import yaml_data
+    from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
     from pathlib import Path
 
     path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_1.md")
-    data = yaml_data(path)
+    data = retrieve_yaml_data(path)
     print(data)
     # dict = clear_list_value(data, "tags", "objetivo-uso/ativo")
     dict = clear_item_in_list(data, "status", "[[〰️]]")
