@@ -13,9 +13,14 @@ from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
 
 def extract_frontmatter(path: Path) -> str:
     """
-    Extracts the YAML (frontmatter) block from a Markdown file via its path.
-    Returns None if there is no valid frontmatter.
+    Extracts the YAML frontmatter block from a Markdown file via its path.
+
+    :param path: Markdown file path.
+    :type path: Path
+    :return: File frontmatter.
+    :rtype: str
     """
+
     with path.open("r", encoding="utf-8") as file:
         lines = file.readlines()
 
@@ -33,6 +38,11 @@ def extract_frontmatter(path: Path) -> str:
 def parse_yaml(frontmatter: str) -> Dict[str, Any]:
     """
     Converts the YAML frontmatter (string) into a Python dictionary.
+
+    :param frontmatter: File frontmatter.
+    :type frontmatter: str
+    :return: Frontmatter dictionary.
+    :rtype: Dict[str, Any]
     """
 
     yaml_parser = YAML(typ="safe")

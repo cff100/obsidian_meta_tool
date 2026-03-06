@@ -1,5 +1,6 @@
 from typing import Optional
 
+from obsidian_meta_tool.error_classes import frontmatter_errors as fe
 
 def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     """
@@ -13,9 +14,9 @@ def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     fm_end = frontmatter_end(file_lines)
     
     if fm_end is None:
-        raise ValueError("The front matter of this file is not properly closed.")
+        raise fe.UnclosedFrontmatterError("The frontmatter of the file is not properly closed (missing closing '---' marker).") 
     if fm_end < fm_start:
-        raise ValueError("The frontmatter is empty (No values between the markers '---').")
+        raise fe.EmptyFrontmatterError("The frontmatter is empty (No values between the markers '---').")
 
     return fm_start, fm_end
 
@@ -27,7 +28,7 @@ def check_no_lines_error(file_lines: list[str]):
     """
     
     if not file_has_lines(file_lines):
-        raise ValueError("The file has no lines to process.")
+        raise fe.NoLinesError("The file has no lines to process.")
     
 
 
@@ -41,7 +42,7 @@ def frontmatter_start(file_lines: list[str]) -> int:
     # if not file_has_lines(file_lines): # This section has been removed for redundancy. This function will likely only be used in the function `frontmatter_line_numbers`, which already checks if the file has lines and raises an error if it doesn't.
     #     raise ValueError("The file has no lines to process.")
     if file_lines[0] != "---":
-        raise ValueError("There is no frontmatter in this file.")
+        raise fe.NoFrontmatterError("There is no frontmatter in this file.")
     else:
         start = 1
     return start

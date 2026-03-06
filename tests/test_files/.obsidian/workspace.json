@@ -1,24 +1,24 @@
 {
   "main": {
-    "id": "ea8b6dd80ad49796",
+    "id": "bc330ab830534e2b",
     "type": "split",
     "children": [
       {
-        "id": "db9f65a2efafc45a",
+        "id": "df1f5a3caec7805a",
         "type": "tabs",
         "children": [
           {
-            "id": "8d5255a349af6d40",
+            "id": "c5e0b55bafc4f6bd",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "arquivo_de_teste_1.md",
+                "file": "common_file.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "arquivo_de_teste_1"
+              "title": "common_file"
             }
           }
         ]
@@ -27,15 +27,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "f4e0fc9f5d81931a",
+    "id": "d911680443d618bd",
     "type": "split",
     "children": [
       {
-        "id": "d460f9bfc4cd3c0d",
+        "id": "32c5f47b4fc78926",
         "type": "tabs",
         "children": [
           {
-            "id": "42a88ad975fb2388",
+            "id": "9259505f8a7bd2e9",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -48,7 +48,7 @@
             }
           },
           {
-            "id": "b55f2b453b819ea1",
+            "id": "390b616b0e7cbd77",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -65,7 +65,7 @@
             }
           },
           {
-            "id": "4c6f4261047acfe4",
+            "id": "8f7484e0f139bc30",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -81,20 +81,20 @@
     "width": 300
   },
   "right": {
-    "id": "b63835f1ab865b37",
+    "id": "f4b5f2bf242380d2",
     "type": "split",
     "children": [
       {
-        "id": "6a451c137a8933e9",
+        "id": "c8e916864e459a8e",
         "type": "tabs",
         "children": [
           {
-            "id": "adc16c84e3218026",
+            "id": "911dc2611239aa87",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "arquivo_de_teste_1.md",
+                "file": "common_file.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,25 +104,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for arquivo_de_teste_1"
+              "title": "Backlinks for common_file"
             }
           },
           {
-            "id": "4ec97621cf07b462",
+            "id": "aacea25c8142f51a",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "arquivo_de_teste_1.md",
+                "file": "common_file.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from arquivo_de_teste_1"
+              "title": "Outgoing links from common_file"
             }
           },
           {
-            "id": "fc2c50e45ea649b1",
+            "id": "6f04bffd3c35d944",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -137,7 +137,7 @@
             }
           },
           {
-            "id": "7f626e6483dd7471",
+            "id": "a8adc94022421a15",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -151,18 +151,18 @@
             }
           },
           {
-            "id": "40dcb015fc202134",
+            "id": "7c78e4132d63ce88",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "arquivo_de_teste_1.md",
+                "file": "common_file.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of arquivo_de_teste_1"
+              "title": "Outline of common_file"
             }
           }
         ]
@@ -183,9 +183,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "8d5255a349af6d40",
+  "active": "c5e0b55bafc4f6bd",
   "lastOpenFiles": [
-    "arquivo_de_teste_2.md",
-    "arquivo_de_teste_1.md"
+    "empty_file.md",
+    "common_file.md"
   ]
 }

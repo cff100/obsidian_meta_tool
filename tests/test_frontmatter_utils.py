@@ -1,7 +1,6 @@
-from typing import Literal
-
 import pytest
 
+from obsidian_meta_tool.error_classes import frontmatter_errors as fe
 from obsidian_meta_tool.utils.frontmatter_utils import file_has_lines, check_no_lines_error, frontmatter_start, frontmatter_end, frontmatter_line_numbers
 
 
@@ -29,7 +28,7 @@ class TestCheckNoLinesError:
 
 
     def test_error_occurs(self):
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(fe.NoLinesError) as excinfo:
             check_no_lines_error(list_without_lines)
         # print(f"\n      The error message captured was: '{excinfo.value}' List used: {list_without_lines}")
 
@@ -50,7 +49,7 @@ class TestFrontmatterStart:
                                             list_with_blank_lines
                                             ])
     def test_no_frontmatter(self, file_lines: list[str]):
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(fe.NoFrontmatterError) as excinfo:
             frontmatter_start(file_lines)
         # print(f"\n      The error message captured was: '{excinfo.value}' List used: {file_lines}")
 
@@ -81,13 +80,13 @@ class TestFrontmatterEnd:
 class TestFrontmatterLineNumbers:
 
     def test_frontmatter_not_closed(self):
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(fe.UnclosedFrontmatterError) as excinfo:
             frontmatter_line_numbers(not_closed_frontmatter)
         # print(f"\n      The error message captured was: '{excinfo.value}' List used: {not_closed_frontmatter}")
 
 
     def test_empty_frontmatter(self):
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(fe.EmptyFrontmatterError) as excinfo:
             frontmatter_line_numbers(empty_frontmatter)
         # print(f"\n      The error message captured was: '{excinfo.value}' List used: {empty_frontmatter}")
 
