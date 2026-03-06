@@ -4,12 +4,9 @@ from typing import Dict, Any
 from ruamel.yaml import YAML
 
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
+from obsidian_meta_tool.error_classes import frontmatter_errors as fe
 
 
-
-# ----------------------------
-# Frontmatter extraction
-# ----------------------------
 
 def extract_frontmatter(path: Path) -> str:
     """
@@ -24,16 +21,15 @@ def extract_frontmatter(path: Path) -> str:
     with path.open("r", encoding="utf-8") as file:
         lines = file.readlines()
 
-    # print(f"Lines: {lines}")
+    print(f"Lines: {lines}") # For debugging purposes
 
-    start, end = frontmatter_line_numbers(lines)
-    return "".join(lines[start:end+1])
+    try:
+        start, end = frontmatter_line_numbers(lines)
+        return "".join(lines[start:end+1])
+    except (fe.NoFrontmatterError, fe.NoLinesError, fe.UnclosedFrontmatterError, fe.EmptyFrontmatterError):
+        return ""
 
 
-
-# ----------------------------
-# Parsing
-# ----------------------------
 
 def parse_yaml(frontmatter: str) -> Dict[str, Any]:
     """
@@ -46,14 +42,13 @@ def parse_yaml(frontmatter: str) -> Dict[str, Any]:
     """
 
     yaml_parser = YAML(typ="safe")
-    data = yaml_parser.load(frontmatter)
+    try:
+        data = yaml_parser.load(frontmatter)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
 
-    return data if isinstance(data, dict) else {}
 
-
-# ----------------------------
-# Orchestration
-# ----------------------------
 
 def yaml_data(path: Path) -> Dict[str, Any]:
     """
@@ -64,13 +59,9 @@ def yaml_data(path: Path) -> Dict[str, Any]:
     return parse_yaml(frontmatter)
 
 
-# ----------------------------
-# Direct execution
-# ----------------------------
-
 if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\data\arquivo_de_teste_1.md")
-
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\tests\test_files\common_file_1.md")
+    #path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\tests\test_files\empty_file.md")
 
     # frontmatter = extract_frontmatter(path)
     # print(frontmatter)

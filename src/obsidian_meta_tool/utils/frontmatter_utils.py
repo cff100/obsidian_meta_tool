@@ -8,6 +8,8 @@ def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     :type file_lines: list[str]
     :return: Index of the start and end lines, respectively, of the frontmatter (does not consider the '---' markers)
     :rtype: tuple[int, int]
+    :raises UnclosedFrontmatterError: If the frontmatter is not properly closed (missing closing '---' marker).
+    :raises EmptyFrontmatterError: If the frontmatter is empty (No values between the markers '---').
     """
     check_no_lines_error(file_lines)
     fm_start = frontmatter_start(file_lines)
@@ -25,6 +27,7 @@ def check_no_lines_error(file_lines: list[str]):
     """
     :param file_lines: A list whose elements are the lines of a file.
     :type file_lines: list[str]
+    :raises NoLinesError: If the file has no lines to process.
     """
     
     if not file_has_lines(file_lines):
@@ -38,10 +41,11 @@ def frontmatter_start(file_lines: list[str]) -> int:
     :type file_lines: list[str]
     :return: Index of the frontmatter start line (after the '---' marker)
     :rtype: int
+    :raises NoFrontmatterError: If the file does not have frontmatter.
     """
     # if not file_has_lines(file_lines): # This section has been removed for redundancy. This function will likely only be used in the function `frontmatter_line_numbers`, which already checks if the file has lines and raises an error if it doesn't.
     #     raise ValueError("The file has no lines to process.")
-    if file_lines[0] != "---":
+    if file_lines[0].strip() != "---":
         raise fe.NoFrontmatterError("There is no frontmatter in this file.")
     else:
         start = 1
@@ -55,9 +59,9 @@ def frontmatter_end(file_lines: list[str]) -> Optional[int]:
     :return: Index of the frontmatter end line (before the '---' marker)
     :rtype: int
     """
-    for i, line in enumerate(file_lines[1:]):
+    for i, line in enumerate(file_lines[1:], start=1):
         if line.strip() == "---":
-            end = i
+            end = i - 1
             return end
     return None
 
