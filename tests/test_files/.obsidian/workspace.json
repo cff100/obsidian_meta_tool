@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "common_file.md",
+                "file": "common_file_1.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "common_file"
+              "title": "common_file_1"
             }
           }
         ]
@@ -185,6 +185,8 @@
   },
   "active": "c5e0b55bafc4f6bd",
   "lastOpenFiles": [
+    "common_file_2.md",
+    "common_file_1.md",
     "empty_file.md",
     "common_file.md"
   ]

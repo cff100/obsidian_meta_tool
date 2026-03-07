@@ -22,8 +22,7 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
     Returns a tuple with the status of the frontmatter and the frontmatter string (if valid). 
     The status can be "valid", "missing", "broken", "empty" or "empty_file".
 
-    :param path: Markdown file path.
-    :type path: Path
+    :param path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
     :return: A tuple with the status of the frontmatter and the frontmatter string (if valid).
         If not valid, the second element of the tuple will be None.
     :rtype: tuple[FrontmatterStatus, Optional[str]]
@@ -81,7 +80,7 @@ def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str
     """
     Returns the YAML data from a Markdown file.
 
-    :param path: Markdown file path.
+    :param path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
     :type path: Path
     :return: A tuple with the status of the frontmatter and the frontmatter data (if valid).
         The status can be "valid", "missing", "broken", "empty" or "empty_file". If the frontmatter is not valid, the second element of the tuple will be None.
