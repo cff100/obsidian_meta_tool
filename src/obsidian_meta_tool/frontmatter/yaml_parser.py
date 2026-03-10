@@ -37,6 +37,9 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
         start, end = frontmatter_line_numbers(lines)
         return FrontmatterStatus.VALID, "".join(lines[start:end+1])
     
+    except fe.NoLinesError:
+        return FrontmatterStatus.EMPTY_FILE, None
+    
     except fe.NoFrontmatterError:
         return FrontmatterStatus.MISSING, None
 
@@ -46,9 +49,7 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
     except fe.EmptyFrontmatterError:
         return FrontmatterStatus.EMPTY, None
 
-    except fe.NoLinesError:
-        return FrontmatterStatus.EMPTY_FILE, None
-
+    
 
 yaml_parser = YAML(typ="safe")
 def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
@@ -96,7 +97,9 @@ def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str
 
 
 if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\obsidian_meta_tool\tests\test_files\common_file_1.md")
+    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\
+                obsidian_meta_tool\tests\test_files\
+                common_file_1.md")
 
     data = retrieve_yaml_data(path)
     print(f"Yaml_data: {data}")

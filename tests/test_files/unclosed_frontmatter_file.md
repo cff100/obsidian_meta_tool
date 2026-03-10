@@ -1,6 +1,4 @@
-
 ---
-*frontmatter delocada é tida como não existente*
 aliases:
 tags:
   - objetivo-uso/ativo
@@ -19,7 +17,7 @@ status:
 progresso: 10
 created: 2026-02-23T13:10:01
 dia: 2026-03-03
----
+
 
 ```bash
 code "/c/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool"
@@ -29,7 +27,6 @@ code "/c/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool"
 - [ ] Fazer o parser de YAML
 
 
----
 
 ### Progresso
 
