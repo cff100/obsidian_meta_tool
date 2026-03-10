@@ -4,12 +4,16 @@ from pathlib import Path
 from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, parse_yaml, retrieve_yaml_data
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus as fe
 
+
+common_file_1_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool/tests/test_files/common_file_1.md")
+empty_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool/tests/test_files/empty_file.md")
+no_frontmatter_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool/tests/test_files/no_frontmatter_file.md")
+
 class TestExtractFrontmatter:
 
-    def test_extract_frontmatter_with_valid_frontmatter(self):
-        """Test extracting frontmatter from a file with valid YAML frontmatter."""
-        path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool/tests/test_files/common_file_1.md")
-        expected_frontmatter = """aliases:
+    def test_valid_frontmatter(self):
+      """Test extracting frontmatter from a file with valid YAML frontmatter."""
+      expected_frontmatter = """aliases:
 tags:
   - objetivo-uso/ativo
   - mov/meta-organizacao
@@ -28,8 +32,14 @@ progresso: 10
 created: 2026-02-23T13:10:01
 dia: 2026-03-03
 """
-        status, result = extract_frontmatter(path)
-        assert status, result == (fe.VALID, expected_frontmatter)
+      status, result = extract_frontmatter(common_file_1_path)
+      assert status, result == (fe.VALID, expected_frontmatter)
+
+    @pytest.mark.parametrize("path",[empty_file_path, no_frontmatter_file_path])
+    def test_no_frontmatter_error(self, path):
+      status, result = extract_frontmatter(path)
+      assert status, result == (fe.MISSING, None)
+
 
     # def test_extract_frontmatter_empty_file(self):
     #     """Test extracting frontmatter from an empty file."""
