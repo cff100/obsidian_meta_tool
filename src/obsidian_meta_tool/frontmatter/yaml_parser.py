@@ -16,6 +16,23 @@ class FrontmatterStatus(Enum):
     EMPTY_FILE = "empty_file"
 
 
+def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
+    """
+    Returns the YAML data from a Markdown file.
+
+    :param path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
+    :type path: Path
+    :return: A tuple with the status of the frontmatter and the frontmatter data (if valid).
+        The status can be "valid", "missing", "broken", "empty" or "empty_file". If the frontmatter is not valid, the second element of the tuple will be None.
+    :rtype: tuple[FrontmatterStatus, Optional[Dict[str, Any]]]
+    """
+
+    status, frontmatter = extract_frontmatter(path)
+    status, data = retrieve_existent_frontmatter(status, frontmatter)
+
+    return status, data
+
+
 def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
     """
     Extracts the frontmatter from a Markdown file. 
@@ -50,6 +67,13 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
         return FrontmatterStatus.EMPTY, None
 
     
+def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
+
+    if status in (FrontmatterStatus.VALID, FrontmatterStatus.EMPTY):
+        return status, parse_yaml(frontmatter)
+    else:
+        return status, None
+    
 
 yaml_parser = YAML(typ="safe")
 def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
@@ -67,33 +91,12 @@ def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
  
     try:
         data = yaml_parser.load(frontmatter)
+        return data
     except YAMLError:
         return {}
 
-    if isinstance(data, dict):
-        return data
 
-    return {}
-
-
-
-def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
-    """
-    Returns the YAML data from a Markdown file.
-
-    :param path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
-    :type path: Path
-    :return: A tuple with the status of the frontmatter and the frontmatter data (if valid).
-        The status can be "valid", "missing", "broken", "empty" or "empty_file". If the frontmatter is not valid, the second element of the tuple will be None.
-    :rtype: tuple[FrontmatterStatus, Optional[Dict[str, Any]]]
-    """
-
-    status, frontmatter = extract_frontmatter(path)
-
-    if status in (FrontmatterStatus.VALID, FrontmatterStatus.EMPTY):
-        return status, parse_yaml(frontmatter)
-
-    return status, None
+    
 
 
 if __name__ == "__main__":

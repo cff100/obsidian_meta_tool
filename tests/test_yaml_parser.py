@@ -1,40 +1,12 @@
 import pytest
 from pathlib import Path
 
-from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter
+from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, parse_yaml
+
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus as fe
 
-
-common_file_1_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                          "obsidian_meta_tool/tests/test_files/" \
-                          "common_file_1.md")
-
-empty_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                      "obsidian_meta_tool/tests/test_files/" \
-                      "empty_file.md")
-
-no_frontmatter_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                "obsidian_meta_tool/tests/test_files/" \
-                                "no_frontmatter_file.md")
-
-no_frontmatter_file_2_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                  "obsidian_meta_tool/tests/test_files/" \
-                                  "no_frontmatter_file_2.md")
-
-unclosed_frontmatter_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                      "obsidian_meta_tool/tests/test_files/" \
-                                      "unclosed_frontmatter_file.md")
-
-empty_frontmatter_file_path = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                  "obsidian_meta_tool/tests/test_files/" \
-                                  "empty_frontmatter_file.md")
-
-
-class TestExtractFrontmatter:
-
-    def test_valid_frontmatter(self):
-      """Test extracting frontmatter from a file with valid YAML frontmatter."""
-      expected_frontmatter = """aliases:
+EXPECTED_FRONTMATTER_COMMON_FILE_1 = """
+aliases:
 tags:
   - objetivo-uso/ativo
   - mov/meta-organizacao
@@ -53,29 +25,92 @@ progresso: 10
 created: 2026-02-23T13:10:01
 dia: 2026-03-03
 """
-      status, result = extract_frontmatter(common_file_1_path)
-      assert status, result == (fe.VALID, expected_frontmatter)
 
-    def test_no_lines_error(self):
-      status, result = extract_frontmatter(empty_file_path)
-      assert status == fe.EMPTY_FILE
-      assert result == None
 
-    @pytest.mark.parametrize("path",[no_frontmatter_file_path, no_frontmatter_file_2_path])
-    def test_no_frontmatter_error(self, path):
-      status, result = extract_frontmatter(path)
-      assert status == fe.MISSING
-      assert result == None
+COMMON_FILE_1_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                          "obsidian_meta_tool/tests/test_files/" \
+                          "common_file_1.md")
 
-    def test_unclosed_frontmatter_error(self):
-      status, result = extract_frontmatter(unclosed_frontmatter_file_path)
-      assert status == fe.BROKEN
-      assert result == None
+EMPTY_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                      "obsidian_meta_tool/tests/test_files/" \
+                      "empty_file.md")
 
-    def test_empty_frontmatter_error(self):
-      status, result = extract_frontmatter(empty_frontmatter_file_path)
-      assert status == fe.EMPTY
-      assert result == None
+NO_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                                "obsidian_meta_tool/tests/test_files/" \
+                                "no_frontmatter_file.md")
+
+NO_FRONTMATTER_FILE_2_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                                  "obsidian_meta_tool/tests/test_files/" \
+                                  "no_frontmatter_file_2.md")
+
+UNCLOSED_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                                      "obsidian_meta_tool/tests/test_files/" \
+                                      "unclosed_frontmatter_file.md")
+
+EMPTY_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
+                                  "obsidian_meta_tool/tests/test_files/" \
+                                  "empty_frontmatter_file.md")
+
+
+class TestExtractFrontmatter:
+
+  def test_valid_frontmatter(self):
+    """Test extracting frontmatter from a file with valid YAML frontmatter."""
+
+    status, result = extract_frontmatter(COMMON_FILE_1_PATH)
+    assert status, result == (fe.VALID, EXPECTED_FRONTMATTER_COMMON_FILE_1)
+
+  def test_no_lines_error(self):
+    status, result = extract_frontmatter(EMPTY_FILE_PATH)
+    assert status == fe.EMPTY_FILE
+    assert result == None
+
+  @pytest.mark.parametrize("path",[NO_FRONTMATTER_FILE_PATH, NO_FRONTMATTER_FILE_2_PATH])
+  def test_no_frontmatter_error(self, path):
+    status, result = extract_frontmatter(path)
+    assert status == fe.MISSING
+    assert result == None
+
+  def test_unclosed_frontmatter_error(self):
+    status, result = extract_frontmatter(UNCLOSED_FRONTMATTER_FILE_PATH)
+    assert status == fe.BROKEN
+    assert result == None
+
+  def test_empty_frontmatter_error(self):
+    status, result = extract_frontmatter(EMPTY_FRONTMATTER_FILE_PATH)
+    assert status == fe.EMPTY
+    assert result == None
+
+
+class TestParseYaml:
+
+
+  def test_frontmatter_is_None(self):
+    data = parse_yaml(None)
+    assert data == {}
+
+
+  def test_dict_data(self):
+    frontmatter = """
+    aliases: alias_text
+    tags:
+      - tag/subtag
+      - other_tag
+    """
+    data = parse_yaml(frontmatter)
+    # print(f"\n>> Data: {data}")
+    assert data == {'aliases': 'alias_text', 'tags': ['tag/subtag', 'other_tag']}
+
+
+  def test_yaml_error(self):
+    frontmatter = """
+      aliases: indented_aliases
+    tags:
+      - tag/subtag
+      - other_tag
+    """
+    data = parse_yaml(frontmatter)
+    assert data == {}
 
 
     # def test_extract_frontmatter_empty_file(self):
