@@ -94,20 +94,3 @@ def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
         return data
     except YAMLError:
         return {}
-
-
-    
-
-
-if __name__ == "__main__":
-    path = Path(r"C:\Caio_(fora_do_drive)\Python_Projetos\
-                obsidian_meta_tool\tests\test_files\
-                common_file_1.md")
-
-    data = retrieve_yaml_data(path)
-    print(f"Yaml_data: {data}")
-
-
-
-
-

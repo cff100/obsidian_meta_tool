@@ -1,9 +1,23 @@
 import pytest
-from pathlib import Path
 
-from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, parse_yaml
+from obsidian_meta_tool.config.paths import TESTS_FILES_FOLDER
+from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, \
+                                                       parse_yaml, \
+                                                       retrieve_existent_frontmatter, \
+                                                       retrieve_yaml_data
 
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus as fe
+
+FRONTMATTER_COMMON_FILE_3 = """
+aliases: alias_text
+tags:
+  - tag/subtag
+  - other_tag
+"""
+FRONTMATTER_DATA_COMMON_FILE_3 = {'aliases': 'alias_text', 'tags': ['tag/subtag', 'other_tag']}
+COMMON_FILE_3_PATH = TESTS_FILES_FOLDER / "common_file_3.md"
+
+
 
 EXPECTED_FRONTMATTER_COMMON_FILE_1 = """
 aliases:
@@ -27,29 +41,23 @@ dia: 2026-03-03
 """
 
 
-COMMON_FILE_1_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                          "obsidian_meta_tool/tests/test_files/" \
-                          "common_file_1.md")
+COMMON_FILE_1_PATH = TESTS_FILES_FOLDER / "common_file_1.md"
 
-EMPTY_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                      "obsidian_meta_tool/tests/test_files/" \
-                      "empty_file.md")
+EMPTY_FILE_PATH = TESTS_FILES_FOLDER / "empty_file.md"
 
-NO_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                "obsidian_meta_tool/tests/test_files/" \
-                                "no_frontmatter_file.md")
+NO_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "no_frontmatter_file.md"
 
-NO_FRONTMATTER_FILE_2_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                  "obsidian_meta_tool/tests/test_files/" \
-                                  "no_frontmatter_file_2.md")
+NO_FRONTMATTER_FILE_2_PATH = TESTS_FILES_FOLDER / "no_frontmatter_file_2.md"
 
-UNCLOSED_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                      "obsidian_meta_tool/tests/test_files/" \
-                                      "unclosed_frontmatter_file.md")
+UNCLOSED_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "unclosed_frontmatter_file.md"
+                                      
 
-EMPTY_FRONTMATTER_FILE_PATH = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                                  "obsidian_meta_tool/tests/test_files/" \
-                                  "empty_frontmatter_file.md")
+EMPTY_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "empty_frontmatter_file.md"                     
+
+class TestRetrieveYamlData:
+
+  def test_valid_file(self):
+    assert retrieve_yaml_data(COMMON_FILE_3_PATH) == (fe.VALID, FRONTMATTER_DATA_COMMON_FILE_3)
 
 
 class TestExtractFrontmatter:
@@ -81,6 +89,18 @@ class TestExtractFrontmatter:
     assert status == fe.EMPTY
     assert result == None
 
+class TestRetrieveExistentForntmatter:
+
+  @pytest.mark.parametrize("status",[fe.VALID, fe.EMPTY])
+  def test_existent_frontmatter(self, status):
+    status_output, data = retrieve_existent_frontmatter(status, FRONTMATTER_COMMON_FILE_3)
+    # print(data)
+    assert (status_output, data) == (status, FRONTMATTER_DATA_COMMON_FILE_3)
+
+  @pytest.mark.parametrize("status",[fe.MISSING, fe.BROKEN, fe.EMPTY_FILE])
+  def test_inexistent_frontmatter(self, status):
+    status_output, data = retrieve_existent_frontmatter(status, None)
+    assert (status_output, data) == (status, None)
 
 class TestParseYaml:
 
@@ -91,15 +111,9 @@ class TestParseYaml:
 
 
   def test_dict_data(self):
-    frontmatter = """
-    aliases: alias_text
-    tags:
-      - tag/subtag
-      - other_tag
-    """
-    data = parse_yaml(frontmatter)
+    data = parse_yaml(FRONTMATTER_COMMON_FILE_3)
     # print(f"\n>> Data: {data}")
-    assert data == {'aliases': 'alias_text', 'tags': ['tag/subtag', 'other_tag']}
+    assert data == FRONTMATTER_DATA_COMMON_FILE_3
 
 
   def test_yaml_error(self):
@@ -112,74 +126,3 @@ class TestParseYaml:
     data = parse_yaml(frontmatter)
     assert data == {}
 
-
-    # def test_extract_frontmatter_empty_file(self):
-    #     """Test extracting frontmatter from an empty file."""
-    #     path = Path("tests/test_files/empty_file.md")
-    #     result = extract_frontmatter(path)
-    #     assert result == ""
-
-    # def test_extract_frontmatter_no_frontmatter(self):
-    #     """Test extracting frontmatter from a file without frontmatter."""
-    #     # Create a temporary file without frontmatter
-    #     temp_path = Path("tests/test_files/no_frontmatter.md")
-    #     temp_path.write_text("This is just content.\nNo frontmatter here.")
-    #     try:
-    #         result = extract_frontmatter(temp_path)
-    #         assert result == ""
-    #     finally:
-    #         temp_path.unlink()
-
-
-# class TestParseYaml:
-#     def test_parse_yaml_valid(self):
-#         """Test parsing valid YAML string."""
-#         yaml_str = "key: value\nlist:\n  - item1\n  - item2"
-#         expected = {"key": "value", "list": ["item1", "item2"]}
-#         result = parse_yaml(yaml_str)
-#         assert result == expected
-
-#     def test_parse_yaml_empty(self):
-#         """Test parsing empty YAML string."""
-#         yaml_str = ""
-#         result = parse_yaml(yaml_str)
-#         assert result == {}
-
-#     def test_parse_yaml_invalid(self):
-#         """Test parsing invalid YAML string."""
-#         yaml_str = "invalid: yaml: content:"
-#         # Since it uses safe load, it should return {} if not a dict
-#         result = parse_yaml(yaml_str)
-#         assert result == {}
-
-#     def test_parse_yaml_not_dict(self):
-#         """Test parsing YAML that is not a dictionary."""
-#         yaml_str = "- item1\n- item2"
-#         result = parse_yaml(yaml_str)
-#         assert result == {}
-
-
-# class TestYamlData:
-#     def test_yaml_data_with_frontmatter(self):
-#         """Test yaml_data with a file containing frontmatter."""
-#         path = Path("tests/test_files/common_file_1.md")
-#         result = retrieve_yaml_data(path)
-#         assert isinstance(result, dict)
-#         assert "aliases" in result
-#         assert result["impacto"] == 3
-
-#     def test_yaml_data_empty_file(self):
-#         """Test yaml_data with an empty file."""
-#         path = Path("tests/test_files/empty_file.md")
-#         result = retrieve_yaml_data(path)
-#         assert result == {}
-
-#     def test_yaml_data_no_frontmatter(self):
-#         """Test yaml_data with a file without frontmatter."""
-#         temp_path = Path("tests/test_files/no_frontmatter.md")
-#         temp_path.write_text("This is just content.\nNo frontmatter here.")
-#         try:
-#             result = retrieve_yaml_data(temp_path)
-#             assert result == {}
-#         finally:
-#             temp_path.unlink()
