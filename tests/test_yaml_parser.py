@@ -93,14 +93,14 @@ class TestRetrieveExistentForntmatter:
 
   @pytest.mark.parametrize("status",[fe.VALID, fe.EMPTY])
   def test_existent_frontmatter(self, status):
-    status_output, data = retrieve_existent_frontmatter(status, FRONTMATTER_COMMON_FILE_3)
+    data = retrieve_existent_frontmatter(status, FRONTMATTER_COMMON_FILE_3)
     # print(data)
-    assert (status_output, data) == (status, FRONTMATTER_DATA_COMMON_FILE_3)
+    assert data == FRONTMATTER_DATA_COMMON_FILE_3
 
   @pytest.mark.parametrize("status",[fe.MISSING, fe.BROKEN, fe.EMPTY_FILE])
   def test_inexistent_frontmatter(self, status):
-    status_output, data = retrieve_existent_frontmatter(status, None)
-    assert (status_output, data) == (status, None)
+    data = retrieve_existent_frontmatter(status, None)
+    assert data == None
 
 class TestParseYaml:
 

@@ -28,7 +28,7 @@ def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str
     """
 
     status, frontmatter = extract_frontmatter(path)
-    status, data = retrieve_existent_frontmatter(status, frontmatter)
+    data = retrieve_existent_frontmatter(status, frontmatter)
 
     return status, data
 
@@ -67,12 +67,12 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
         return FrontmatterStatus.EMPTY, None
 
     
-def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
+def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> Optional[Dict[str, Any]]:
 
     if status in (FrontmatterStatus.VALID, FrontmatterStatus.EMPTY):
-        return status, parse_yaml(frontmatter)
+        return parse_yaml(frontmatter)
     else:
-        return status, None
+        return None
     
 
 yaml_parser = YAML(typ="safe")
