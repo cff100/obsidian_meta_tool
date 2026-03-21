@@ -4,9 +4,8 @@ from typing import Any
 
 from ruamel.yaml import YAML
 
+yaml_parser = YAML()
 def dump_yaml(data: dict) -> Any:
-
-    yaml_parser = YAML()
     return yaml_parser.dump(data, sys.stdout)
 
 if __name__ == "__main__":
