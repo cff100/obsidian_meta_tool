@@ -1,2 +1,5 @@
+from pathlib import Path
 
-print(len([]))
+a = Path()
+if a:
+    print(True)
