@@ -6,6 +6,7 @@ from ruamel.yaml import YAML, YAMLError
 
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
 from obsidian_meta_tool.error_classes import frontmatter_errors as fe
+from obsidian_meta_tool.io.read import read_lines
 
 
 class FrontmatterStatus(Enum):
@@ -45,8 +46,7 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
     :rtype: tuple[FrontmatterStatus, Optional[str]]
     """
 
-    with path.open("r", encoding="utf-8") as file:
-        lines = file.readlines()
+    lines = read_lines(path)
 
     #print(f"Lines: {lines}") # For debugging purposes
 

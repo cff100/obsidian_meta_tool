@@ -59,6 +59,7 @@ def frontmatter_end(file_lines: list[str]) -> Optional[int]:
     :return: Index of the frontmatter end line (before the '---' marker)
     :rtype: int
     """
+    #print(file_lines)
     for i, line in enumerate(file_lines[1:], start=1):
         if line.strip() == "---":
             end = i - 1
