@@ -18,5 +18,5 @@ def replace_lines(all_lines: list, replacement_start_line: int, replacement_end_
     :rtype: list[Any]
     """
 
-    all_lines[replacement_start_line:replacement_end_line + 1] = new_lines
+    all_lines = all_lines[:replacement_start_line] + new_lines + all_lines[replacement_end_line + 1:]
     return all_lines
