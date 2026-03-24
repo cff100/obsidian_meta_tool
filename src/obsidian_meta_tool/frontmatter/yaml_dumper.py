@@ -1,6 +1,7 @@
 from typing import Optional
 from pathlib import Path
 from io import StringIO
+import sys
 
 from ruamel.yaml import YAML
 
@@ -9,29 +10,31 @@ from obsidian_meta_tool.io.write import write_lines
 from obsidian_meta_tool.utils.lines_utils import replace_lines
 
 yaml_parser = YAML()
-def dump_yaml(data: dict) -> str:
+def dump_yaml(data: dict) -> list:
     """
     
-    Converts a dictionary to a YAML string representation. 
+    Converts a dictionary to a YAML string representation. The resulting YAML string is returned as a list of lines.
 
     :param data: The data to be converted to YAML format. It should be a dictionary where the keys are the field names and the values are the corresponding values for those fields.
     :type data: dict
-    :return: The YAML string representation of the input data.
-    :rtype: str
+    :return: The YAML string representation of the input data, returned as a list of lines. Each element in the list corresponds to a line in the YAML output.
+    :rtype: list
     """
     output = StringIO()
+    yaml_parser.indent(offset=2)
     yaml_parser.dump(data, output)
-    return output.getvalue()
+    data_lines = output.getvalue().splitlines()
+    return data_lines
 
 
 def replace_data(origin_path: Path, old_frontmatter_start: int, old_frontmatter_end: int, 
-                 new_data: str, goal_path: Optional[Path] = None):
+                 new_data_lines: list, goal_path: Optional[Path] = None):
 
-    goal_path = decide_goal_path(origin_path, goal_path )
+    goal_path = decide_goal_path(origin_path, goal_path)
 
     lines = read_lines(origin_path)
 
-    lines = replace_lines(lines, old_frontmatter_start, old_frontmatter_end, new_data.splitlines())
+    lines = replace_lines(lines, old_frontmatter_start, old_frontmatter_end, new_data_lines)
 
     write_lines(goal_path, lines)
 
