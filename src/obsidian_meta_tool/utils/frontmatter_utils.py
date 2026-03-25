@@ -4,6 +4,9 @@ from obsidian_meta_tool.error_classes import frontmatter_errors as fe
 
 def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     """
+    Finds the start and end line indices of the YAML frontmatter content.
+    The indices returned correspond to the actual data lines, excluding the '---' markers.
+
     :param file_lines: A list whose elements are the lines of a file.
     :type file_lines: list[str]
     :return: Index of the start and end lines, respectively, of the frontmatter (does not consider the '---' markers)

@@ -1,40 +1,61 @@
-from typing import Optional
+from typing import Optional, Dict, Any
 from pathlib import Path
 from io import StringIO
-import sys
 
 from ruamel.yaml import YAML
 
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.io.write import write_lines
 from obsidian_meta_tool.utils.lines_utils import replace_lines
+from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
+
+
 
 yaml_parser = YAML()
-def dump_yaml(data: dict) -> list:
+def dump_yaml(data: Dict[str, Any]) -> list:
     """
     
     Converts a dictionary to a YAML string representation. The resulting YAML string is returned as a list of lines.
 
     :param data: The data to be converted to YAML format. It should be a dictionary where the keys are the field names and the values are the corresponding values for those fields.
-    :type data: dict
+    :type data: Dict[str, Any]
     :return: The YAML string representation of the input data, returned as a list of lines. Each element in the list corresponds to a line in the YAML output.
     :rtype: list
     """
     output = StringIO()
+    yaml_parser.preserve_quotes = True
     yaml_parser.indent(offset=2)
+
     yaml_parser.dump(data, output)
-    data_lines = output.getvalue().splitlines()
+    data_lines = output.getvalue().splitlines(keepends=True)
     return data_lines
 
 
-def replace_data(origin_path: Path, old_frontmatter_start: int, old_frontmatter_end: int, 
-                 new_data_lines: list, goal_path: Optional[Path] = None):
+def replace_data(origin_path: Path, new_frontmatter: Dict[str, Any], goal_path: Optional[Path] = None):
+    """
+    Replaces the existing frontmatter in a file with new data.
+
+    This function reads the content of the `origin_path`, identifies the existing 
+    frontmatter boundaries, replaces those lines with the YAML representation 
+    of `new_frontmatter`, and writes the result to `goal_path`.
+
+    :param origin_path: File path of the original file.
+    :type origin_path: Path
+    :param new_frontmatter: New frontmatter data to be inserted into the file.
+    :type new_frontmatter: Dict[str, Any]
+    :param goal_path: File path of the goal file. If not provided, the original file will be overwritten.
+    :type goal_path: Optional[Path]    
+    """
+
+    new_frontmatter_lines = dump_yaml(new_frontmatter)
 
     goal_path = decide_goal_path(origin_path, goal_path)
 
     lines = read_lines(origin_path)
 
-    lines = replace_lines(lines, old_frontmatter_start, old_frontmatter_end, new_data_lines)
+    old_frontmatter_start, old_frontmatter_end = frontmatter_line_numbers(lines)
+
+    lines = replace_lines(lines, old_frontmatter_start, old_frontmatter_end, new_frontmatter_lines)
 
     write_lines(goal_path, lines)
 

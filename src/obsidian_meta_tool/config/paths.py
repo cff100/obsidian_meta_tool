@@ -11,6 +11,8 @@ class TestsFilesPaths:
 
     COMMON_FILE_1_PATH = TESTS_FILES_FOLDER / "common_file_1.md"
 
+    COMMON_FILE_2_PATH = TESTS_FILES_FOLDER / "common_file_2.md"
+
     COMMON_FILE_3_PATH = TESTS_FILES_FOLDER / "common_file_3.md"
 
     EMPTY_FILE_PATH = TESTS_FILES_FOLDER / "empty_file.md"
@@ -21,4 +23,6 @@ class TestsFilesPaths:
 
     UNCLOSED_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "unclosed_frontmatter_file.md"
                                         
-    EMPTY_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "empty_frontmatter_file.md"                     
+    EMPTY_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "empty_frontmatter_file.md"
+
+    GOAL_FILE_1_PATH = TESTS_FILES_FOLDER / "goal_file_1.md"                
