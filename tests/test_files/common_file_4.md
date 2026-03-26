@@ -1,0 +1,6 @@
+---
+aliases:
+status:
+  - "[[Em-Desenvolvimento]]"
+  - "[[〰️]]"
+---

@@ -12,8 +12,15 @@ from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus as fe
 
 class TestRetrieveYamlData:
 
-  def test_valid_file(self):
-    assert retrieve_yaml_data(tfp.COMMON_FILE_3_PATH) == (fe.VALID, tff.FRONTMATTER_DATA_COMMON_FILE_3)
+    @pytest.mark.parametrize(
+        "path, frontmatter_data",
+        [
+            (tfp.COMMON_FILE_3_PATH, tff.FRONTMATTER_DATA_COMMON_FILE_3),
+            (tfp.COMMON_FILE_4_PATH, tff.FRONTMATTER_DATA_COMMON_FILE_4),
+        ],
+    )
+    def test_valid_file(self, path, frontmatter_data):
+        assert retrieve_yaml_data(path) == (fe.VALID, frontmatter_data)
 
 
 class TestExtractFrontmatter:

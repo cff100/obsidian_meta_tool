@@ -15,6 +15,8 @@ class TestsFilesPaths:
 
     COMMON_FILE_3_PATH = TESTS_FILES_FOLDER / "common_file_3.md"
 
+    COMMON_FILE_4_PATH = TESTS_FILES_FOLDER / "common_file_4.md"
+
     EMPTY_FILE_PATH = TESTS_FILES_FOLDER / "empty_file.md"
 
     NO_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "no_frontmatter_file.md"

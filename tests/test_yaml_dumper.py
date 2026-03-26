@@ -10,8 +10,9 @@ from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 
 
 def test_dump_yaml():
-    data_lines = dump_yaml(tff.FRONTMATTER_DATA_COMMON_FILE_3)
-    assert data_lines == ["aliases: alias_text\n", "tags:\n", "  - tag/subtag\n", "  - other_tag\n"]
+    data_lines = dump_yaml(tff.FRONTMATTER_DATA_COMMON_FILE_4)
+    print(data_lines)
+    assert data_lines == tff.FRONTMATTER_LINES_LIST_FILE_4
 
 
 def test_replace_data():

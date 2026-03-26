@@ -9,7 +9,9 @@ tags:\n\
 '
     FRONTMATTER_DATA_COMMON_FILE_3 = {'aliases': 'alias_text', 'tags': ['tag/subtag', 'other_tag']}
 
-    
+    FRONTMATTER_DATA_COMMON_FILE_4 = {'aliases': None, 'status': ["[[Em-Desenvolvimento]]", "[[〰️]]"]}
+
+    FRONTMATTER_LINES_LIST_FILE_4 = ['aliases:\n', 'status:\n', '  - "[[Em-Desenvolvimento]]"\n', '  - "[[〰️]]"\n']
     
     EXPECTED_FRONTMATTER_COMMON_FILE_1 = \
 'aliases:\n\
