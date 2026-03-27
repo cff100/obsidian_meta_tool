@@ -4,19 +4,19 @@ tags:
   - objetivo-uso/ativo
   - mov/meta-organizacao
 categorias:
-  - '[[Objetivos (Categoria)]]'
+  - "[[Objetivos (Categoria)]]"
 objetivo_tipos:
-  - '[[Objetivos originais]]'
+  - "[[Objetivos originais]]"
 impacto: 3
 progresso_por_foco: 10.5
 prazo:
 fazer:
 status:
-  - '[[Em-Desenvolvimento]]'
-  - '[[〰️]]'
+  - "[[Em-Desenvolvimento]]"
+  - "[[〰️]]"
 progresso: 10
-modified: 2026-02-23 13:11:13
-created: 2026-02-23 13:10:01
+modified: 2026-02-23T13:11:13
+created: 2026-02-23T13:10:01
 dia: 2026-03-03
 ---
 

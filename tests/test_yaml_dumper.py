@@ -6,9 +6,6 @@ from obsidian_meta_tool.config.paths import TestsFilesPaths as tfp
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 
 
-
-
-
 def test_dump_yaml():
     data_lines = dump_yaml(tff.FRONTMATTER_DATA_COMMON_FILE_4)
     print(data_lines)
@@ -16,8 +13,9 @@ def test_dump_yaml():
 
 
 def test_replace_data():
-    origin_path = tfp.COMMON_FILE_1_PATH
+    origin_path = tfp.COMMON_FILE_2_PATH
     _, new_frontmatter = retrieve_yaml_data(tfp.COMMON_FILE_2_PATH)
+    #print(f"\n{new_frontmatter}\n")
     new_frontmatter = cast(dict, new_frontmatter)
     goal_path = tfp.GOAL_FILE_1_PATH
     replace_data(origin_path, new_frontmatter, goal_path)

@@ -1,34 +1,16 @@
 from typing import Optional, Dict, Any
 from pathlib import Path
 from io import StringIO
+import re
+import datetime
 
 from ruamel.yaml import YAML
+
 
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.io.write import write_lines
 from obsidian_meta_tool.utils.lines_utils import replace_lines
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
-
-
-
-yaml_parser = YAML()
-def dump_yaml(data: Dict[str, Any]) -> list:
-    """
-    
-    Converts a dictionary to a YAML string representation. The resulting YAML string is returned as a list of lines.
-
-    :param data: The data to be converted to YAML format. It should be a dictionary where the keys are the field names and the values are the corresponding values for those fields.
-    :type data: Dict[str, Any]
-    :return: The YAML string representation of the input data, returned as a list of lines. Each element in the list corresponds to a line in the YAML output.
-    :rtype: list
-    """
-    output = StringIO()
-    yaml_parser.preserve_quotes = True
-    yaml_parser.indent(offset=2)
-
-    yaml_parser.dump(data, output)
-    data_lines = output.getvalue().splitlines(keepends=True)
-    return data_lines
 
 
 def replace_data(origin_path: Path, new_frontmatter: Dict[str, Any], goal_path: Optional[Path] = None):
@@ -60,6 +42,54 @@ def replace_data(origin_path: Path, new_frontmatter: Dict[str, Any], goal_path: 
     write_lines(goal_path, lines)
 
 
+
+class DatetimeWithT:
+    """Datetime wrapper that forces output in ISO format with T."""
+    def __init__(self, dt):
+        self.dt = dt
+
+def represent_datetime_with_t(representer, data):
+    """Representative for the DatetimeWithT wrapper."""
+    return representer.represent_scalar(
+        'tag:yaml.org,2002:timestamp', 
+        data.dt.isoformat()
+    )
+
+def prepare_datetime_with_t(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Replace the values of the special keys with the wrapper."""
+    for key in ['created', 'modified']:
+        if key in data and isinstance(data[key], datetime.datetime):
+            data[key] = DatetimeWithT(data[key])
+    return data
+
+
+yaml = YAML()
+yaml.preserve_quotes = True
+yaml.indent(offset=2)
+yaml.representer.add_representer(DatetimeWithT, represent_datetime_with_t)
+
+def dump_yaml(data: Dict[str, Any]) -> list:
+    """
+    
+    Converts a dictionary to a YAML string representation. The resulting YAML string is returned as a list of lines.
+
+    :param data: The data to be converted to YAML format. It should be a dictionary where the keys are the field names and the values are the corresponding values for those fields.
+    :type data: Dict[str, Any]
+    :return: The YAML string representation of the input data, returned as a list of lines. Each element in the list corresponds to a line in the YAML output.
+    :rtype: list
+    """
+
+    data = prepare_datetime_with_t(data)
+
+    output = StringIO()
+    yaml.dump(data, output)
+
+    lines = output.getvalue().splitlines(keepends=True)
+    lines = replace_single_with_double_quotes(lines)
+
+    return lines
+
+
 def decide_goal_path(origin_path: Path, goal_path: Optional[Path] = None) -> Path:
     """
     Decides the goal path for the output file. 
@@ -77,7 +107,8 @@ def decide_goal_path(origin_path: Path, goal_path: Optional[Path] = None) -> Pat
 
     return goal_path
 
-
-# if __name__ == "__main__":
-    #data = {'aliases': 'alias de exemplo', 'tags': ['objetivo-uso/ativo', 'mov/meta-organizacao'], 'categorias': ['[[Objetivos (Categoria)]]'], 'objetivo_tipos': ['[[Objetivos originais]]'], 'impacto': 3, 'progresso_por_foco': 10, 'prazo': None, 'fazer': None, 'status': ['[[Em-Desenvolvimento]]', '[[〰️]]'], 'progresso': 10, 'modified': datetime.datetime(2026, 2, 23, 13, 11, 13), 'created': datetime.datetime(2026, 2, 23, 13, 10, 1)}
-    #print(dump_yaml(data).splitlines())
+def replace_single_with_double_quotes(lines: list) -> list:
+    """ Replace '[[...]]' with "[[...]]" """
+    for i, line in enumerate(lines): 
+        lines[i] = re.sub(r"'(\[\[.*?\]\])'", r'"\1"', line)
+    return lines

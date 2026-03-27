@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "no_frontmatter_file.md",
+                "file": "goal_file_1.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "no_frontmatter_file"
+              "title": "goal_file_1"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "no_frontmatter_file.md",
+                "file": "goal_file_1.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for no_frontmatter_file"
+              "title": "Backlinks for goal_file_1"
             }
           },
           {
@@ -184,15 +184,17 @@
   },
   "active": "c5e0b55bafc4f6bd",
   "lastOpenFiles": [
-    "goal_file_1.md",
-    "no_frontmatter_file.md",
+    "unclosed_frontmatter_file.md",
+    "common_file_2.md",
+    "common_file_4.md",
+    "common_file_3.md",
+    "common_file_1.md",
     "empty_file.md",
     "empty_frontmatter_file.md",
-    "common_file_1.md",
-    "common_file_2.md",
+    "goal_file_1.md",
+    "no_frontmatter_file.md",
     "no_frontmatter_file_2.md",
     "empty_file copy.md",
-    "unclosed_frontmatter_file.md",
     "common_file_1 copy.md",
     "common_file.md"
   ]

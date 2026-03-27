@@ -51,7 +51,7 @@ status:\n\
   - "[[Em-Desenvolvimento]]"\n\
   - "[[〰️]]"\n\
 progresso: 10\n\
-modified: 2026-02-23 13:11:13\n\
+modified: 2026-02-23T13:11:13\n\
 created: 2026-02-23T13:10:01\n\
 dia: 2026-03-03\n\
 ---\n\
@@ -70,8 +70,7 @@ code "/c/Caio_(fora_do_drive)/Python_Projetos/obsidian_meta_tool"\n\
 \n\
 #### [[2026-02-23]]\n\
 \n\
-- Configurei o projeto\n\
-\n'
+- Configurei o projeto\n'
 
 
 
