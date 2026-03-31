@@ -3,6 +3,8 @@ from pathlib import Path
 TESTS_FILES_FOLDER = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
                           "obsidian_meta_tool/tests/test_files/")
 
+SQL_DATABASE_PATH = "data/all_files.db"
+
 class TestsFilesPaths:
 
     SIMPLE_FILE_1_PATH = TESTS_FILES_FOLDER / "simple_file_1.md"
@@ -28,3 +30,6 @@ class TestsFilesPaths:
     EMPTY_FRONTMATTER_FILE_PATH = TESTS_FILES_FOLDER / "empty_frontmatter_file.md"
 
     GOAL_FILE_1_PATH = TESTS_FILES_FOLDER / "goal_file_1.md"                
+
+
+# def capture_vault_file_paths(vault_path: Path):
