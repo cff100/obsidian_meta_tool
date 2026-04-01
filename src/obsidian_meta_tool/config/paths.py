@@ -1,9 +1,13 @@
 from pathlib import Path
 
-TESTS_FILES_FOLDER = Path("C:/Caio_(fora_do_drive)/Python_Projetos/" \
-                          "obsidian_meta_tool/tests/test_files/")
+PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
+
+TESTS_FILES_FOLDER = PROJECT_ROOT_FOLDER / "tests/test_files"
 
 SQL_DATABASE_PATH = "data/all_files.db"
+
+CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
+
 
 class TestsFilesPaths:
 

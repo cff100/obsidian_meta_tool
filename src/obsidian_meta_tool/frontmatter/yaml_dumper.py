@@ -11,6 +11,7 @@ from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.io.write import write_lines
 from obsidian_meta_tool.utils.lines_utils import replace_lines
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
+from obsidian_meta_tool.config.constants import FRONT_MATTER_TIMESTAMPS_PLUGIN_NAMES
 
 
 def replace_data(origin_path: Path, new_frontmatter: Dict[str, Any], goal_path: Optional[Path] = None):
@@ -57,7 +58,7 @@ def represent_datetime_with_t(representer, data):
 
 def prepare_datetime_with_t(data: Dict[str, Any]) -> Dict[str, Any]:
     """Replace the values of the special keys with the wrapper."""
-    for key in ['created', 'modified']:
+    for key in FRONT_MATTER_TIMESTAMPS_PLUGIN_NAMES:
         if key in data and isinstance(data[key], datetime.datetime):
             data[key] = DatetimeWithT(data[key])
     return data

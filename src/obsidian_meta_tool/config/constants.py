@@ -1,4 +1,6 @@
 
+FRONT_MATTER_TIMESTAMPS_PLUGIN_NAMES = ['created', 'modified']
+
 class TestFilesFrontmatters:
 
     FRONTMATTER_COMMON_FILE_3 = \
