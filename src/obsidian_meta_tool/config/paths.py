@@ -1,10 +1,14 @@
 from pathlib import Path
 
+from obsidian_meta_tool.utils.dinamic_name_path import create_dinamic_txt_file_path_name
+
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
 
 TESTS_FILES_FOLDER = PROJECT_ROOT_FOLDER / "tests/test_files"
 
-SQL_DATABASE_PATH = "data/all_files.db"
+DATA_FOLDER = PROJECT_ROOT_FOLDER / "data"
+
+SQL_DATABASE_PATH = str(DATA_FOLDER / "all_files.db")
 
 CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
 
@@ -36,4 +40,18 @@ class TestsFilesPaths:
     GOAL_FILE_1_PATH = TESTS_FILES_FOLDER / "goal_file_1.md"                
 
 
-# def capture_vault_file_paths(vault_path: Path):
+def capture_vault_file_paths(vault_name: str) -> None:
+
+    from obsidian_meta_tool.utils.access_config import access_vault_path
+
+    vault_path = access_vault_path(vault_name).resolve()
+
+    txt_file_path = DATA_FOLDER / create_dinamic_txt_file_path_name(vault_name)
+
+    with open(txt_file_path, 'w', encoding='utf-8') as file:
+        for item in vault_path.rglob("*"):
+            print(item)
+            file.write(f"{item}\n")
+
+if __name__ == "__main__":
+    capture_vault_file_paths("cognitio_vitae_2")
