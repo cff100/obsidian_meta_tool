@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from obsidian_meta_tool.utils.dinamic_name_path import create_dinamic_txt_file_path_name
-
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
 
 TESTS_FILES_FOLDER = PROJECT_ROOT_FOLDER / "tests/test_files"
@@ -46,12 +44,10 @@ def capture_vault_file_paths(vault_name: str) -> None:
 
     vault_path = access_vault_path(vault_name).resolve()
 
-    txt_file_path = DATA_FOLDER / create_dinamic_txt_file_path_name(vault_name)
+    txt_file_path = DATA_FOLDER / (vault_name + "_paths.txt")             
 
     with open(txt_file_path, 'w', encoding='utf-8') as file:
         for item in vault_path.rglob("*"):
-            print(item)
+            # print(item)
             file.write(f"{item}\n")
 
-if __name__ == "__main__":
-    capture_vault_file_paths("cognitio_vitae_2")
