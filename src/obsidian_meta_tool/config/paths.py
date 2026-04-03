@@ -44,10 +44,13 @@ def capture_vault_file_paths(vault_name: str) -> None:
 
     vault_path = access_vault_path(vault_name).resolve()
 
-    txt_file_path = DATA_FOLDER / (vault_name + "_paths.txt")             
+    txt_file_path = create_txt_paths_file_name(vault_name)             
 
     with open(txt_file_path, 'w', encoding='utf-8') as file:
         for item in vault_path.rglob("*"):
             # print(item)
             file.write(f"{item}\n")
 
+def create_txt_paths_file_name(vault_name: str):
+
+    return DATA_FOLDER / (vault_name + "_paths.txt")

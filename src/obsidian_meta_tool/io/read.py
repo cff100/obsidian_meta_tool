@@ -9,7 +9,19 @@ def read_lines(path: Path) -> list:
     :return: A list of lines read from the file.
     :rtype: list[Any]
     """
-    with path.open("r", encoding="utf-8") as file:
-        lines = file.readlines()
+    
+    # if not path.is_file():
+    #     print(f"Not a file (is directory or doesn't exist): {path}")
+    #     return []
+    
+    try:
+        with path.open("r", encoding="utf-8") as file:
+            lines = file.readlines()
+    except PermissionError:
+        print(f"Access denied: {path}")
+        lines = []
+    except UnicodeDecodeError:
+        print(f"Encoding error in: {path}")
+        lines = []
 
     return lines
