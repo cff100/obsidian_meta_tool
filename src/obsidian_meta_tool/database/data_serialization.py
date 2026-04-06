@@ -3,12 +3,17 @@ from pathlib import Path
 import json
 
 
-def any_to_text(variable: Any) -> str:
+def any_to_text(variable: Any) -> str | None:
 
     if isinstance(variable, Path):
         variable_text = str(variable)
     elif isinstance(variable, dict):
         variable_text = json.dumps(variable)
+    elif variable is None:
+        variable_text = None
+    elif isinstance(variable, str):
+        variable_text = variable
+    
 
     return variable_text
 
