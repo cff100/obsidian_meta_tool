@@ -12,6 +12,8 @@ def create_database(database_path: str = SQL_DATABASE_PATH):
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filename TEXT NOT NULL,
                 filepath TEXT NOT NULL,
+                extension TEXT,
+                frontmatter_status TEXT,
                 frontmatter TEXT
                 )             
                 """)

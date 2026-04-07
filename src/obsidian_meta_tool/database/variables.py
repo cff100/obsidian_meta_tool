@@ -39,23 +39,23 @@ def create_extension_list(vault_name: str) -> list[str]:
     return extensions_list
 
 
-def create_properties_list_and_status_list(vault_name: str) -> tuple[list[str], list[None | dict]]:
+def create_properties_and_status(vault_name: str) -> tuple[list[str], list[None | dict]]:
 
     file_paths = [Path(file_path_str) for file_path_str in create_file_path_list(vault_name)]
 
-    status_list = []
+    properties_status_list = []
     properties_list = []
 
     for file_path in file_paths:
         if file_path.is_file() and file_path.suffix == ".md":
-            status, data = retrieve_yaml_data(file_path)
-            status_list.append(status.value)
+            properties_status, data = retrieve_yaml_data(file_path)
+            properties_status_list.append(properties_status.value)
         else:
-            status, data = None, None
-            status_list.append(status)
+            properties_status, data = None, None
+            properties_status_list.append(properties_status)
         properties_list.append(data)
 
-    return status_list, properties_list
+    return properties_status_list, properties_list
         
 
 def organize_all_data(vault_name: str) -> list[tuple]:
@@ -63,15 +63,15 @@ def organize_all_data(vault_name: str) -> list[tuple]:
     file_paths = create_file_path_list(vault_name)
     filenames = create_filename_list(vault_name)
     extensions = create_extension_list(vault_name)
-    status_list, properties_list = create_properties_list_and_status_list(vault_name)
+    properties_status_list, properties_list = create_properties_and_status(vault_name)
 
     all_data = []
 
-    for file_path, filename, extension, status, property_list in zip(file_paths, filenames, extensions, status_list, properties_list):
-        each_data = tuple([any_to_text(x) for x in [file_path, filename, extension, status, property_list]])
+    for file_path, filename, extension, properties_status, properties in zip(file_paths, filenames, extensions, properties_status_list, properties_list):
+        each_data = tuple([any_to_text(x) for x in [file_path, filename, extension, properties_status, properties]])
         all_data.append(each_data)
 
-    print(each_data)
+    # print(each_data)
 
     return all_data
         
@@ -84,8 +84,8 @@ if __name__ == "__main__":
     # lista_2 = create_filename_list("cognitio_vitae_2")
     # lista_3 = create_extension_list("cognitio_vitae_2")
     # lista_4, lista_5 = create_properties_list_and_status_list("cognitio_vitae_2")
-    # a = 0
-    # b = 10
+    a = 0
+    b = 10
     # print(lista_1[a:b])
     # print(lista_2[a:b])
     # print(lista_3[a:b])
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     # print(lista_5[a:b])
 
     all_data = organize_all_data("cognitio_vitae_2")
-    print(all_data)
+    print(all_data[a:b])
     print(len(all_data))
 
 
