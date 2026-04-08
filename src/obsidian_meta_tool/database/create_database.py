@@ -10,8 +10,8 @@ def create_database(database_path: str = SQL_DATABASE_PATH):
     cursor.execute("""
                 CREATE TABLE IF NOT EXISTS files ( 
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                filename TEXT NOT NULL,
                 filepath TEXT NOT NULL,
+                filename TEXT NOT NULL,
                 extension TEXT,
                 frontmatter_status TEXT,
                 frontmatter TEXT
