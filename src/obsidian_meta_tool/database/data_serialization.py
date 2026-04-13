@@ -5,6 +5,14 @@ import datetime
 
 
 def any_to_text(variable: Any) -> str | None:
+    """
+    Converts a variable of any type to a string representation for storage in the database.
+
+    :param variable: The variable to be converted to text.
+    :type variable: Any
+    :return: A string representation of the variable, or None if the variable is None.
+    :rtype: str | None
+    """
 
     if isinstance(variable, Path):
         variable_text = str(variable)
@@ -22,6 +30,16 @@ def any_to_text(variable: Any) -> str | None:
     return variable_text
 
 def text_to_any(variable_text: str, type_variable: type) -> Path | dict:
+    """
+    Converts a string representation of a variable back to its original type.
+    
+    :param variable_text: The string representation of the variable to be converted.
+    :type variable_text: str
+    :param type_variable: The type to which the variable should be converted.
+    :type type_variable: type
+    :return: The variable converted back to its original type.
+    :rtype: Path | dict
+    """
 
     if type_variable == Path:
         variable = Path(variable_text)

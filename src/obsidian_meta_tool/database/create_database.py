@@ -1,11 +1,27 @@
 import sqlite3
+from pathlib import Path
 
 from obsidian_meta_tool.config.paths import SQL_DATABASE_PATH
 
-def create_database(database_path: str = SQL_DATABASE_PATH):
+def create_database(database_path: str = SQL_DATABASE_PATH, replace: bool = False) -> None:
+    """
+    Creates a SQLite database with a table for storing file metadata.
+
+
+    :param database_path: The path where the SQLite database will be created.
+    :type database_path: str
+    :param replace: A boolean indicating whether to replace the existing database. Defaults to False.
+    :type replace: bool
+    """
+
+    database_exists = Path(database_path).exists()
 
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
+
+    if replace:
+        cursor.execute("DROP TABLE IF EXISTS files")
+        print("Existing database dropped.")
 
     cursor.execute("""
                 CREATE TABLE IF NOT EXISTS files ( 
@@ -17,9 +33,10 @@ def create_database(database_path: str = SQL_DATABASE_PATH):
                 frontmatter TEXT
                 )             
                 """)
+    
+    if replace or not database_exists:
+        print("New database created.")
 
     connection.commit()
     connection.close()
 
-if __name__ == "__main__":
-    create_database()
