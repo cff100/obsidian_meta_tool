@@ -12,8 +12,6 @@ def update_database(database_path: str = SQL_DATABASE_PATH) -> None:
     
     :param database_path: The path to the SQLite database file. Defaults to SQL_DATABASE_PATH.
     :type database_path: str
-    :return: None
-    :rtype: None
     """
     
     create_database(database_path)
@@ -32,8 +30,6 @@ def insert_values(values: list[tuple], database_path: str = SQL_DATABASE_PATH) -
     :type values: list[tuple]
     :param database_path: The path to the SQLite database file. Defaults to SQL_DATABASE_PATH.
     :type database_path: str
-    :return: None
-    :rtype: None
     """
 
     connection = sqlite3.connect(database_path)
@@ -43,7 +39,4 @@ def insert_values(values: list[tuple], database_path: str = SQL_DATABASE_PATH) -
     connection.commit()
     connection.close()
 
-
-if __name__ == "__main__":
-    update_database()
     
