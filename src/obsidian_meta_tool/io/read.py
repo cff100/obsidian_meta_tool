@@ -10,10 +10,6 @@ def read_lines(path: Path) -> list:
     :rtype: list[Any]
     """
     
-    # if not path.is_file():
-    #     print(f"Not a file (is directory or doesn't exist): {path}")
-    #     return []
-    
     try:
         with path.open("r", encoding="utf-8") as file:
             lines = file.readlines()

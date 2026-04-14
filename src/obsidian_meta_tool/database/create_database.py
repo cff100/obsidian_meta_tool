@@ -5,8 +5,8 @@ from obsidian_meta_tool.config.paths import SQL_DATABASE_PATH
 
 def create_database(database_path: str = SQL_DATABASE_PATH, replace: bool = False) -> None:
     """
-    Creates a SQLite database with a table for storing file metadata.
-
+    Creates a SQLite database with a table for storing file metadata if it doesn't already exist.
+    If it exists, nothing is done.
 
     :param database_path: The path where the SQLite database will be created.
     :type database_path: str
@@ -18,6 +18,10 @@ def create_database(database_path: str = SQL_DATABASE_PATH, replace: bool = Fals
 
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
+
+    if database_exists:
+        print("Database already exists.")
+
 
     if replace:
         cursor.execute("DROP TABLE IF EXISTS files")

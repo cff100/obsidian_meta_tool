@@ -52,22 +52,22 @@ def capture_vault_file_paths(vault_name: str) -> None:
 
     vault_path = access_vault_path(vault_name).resolve()
 
-    txt_file_path = create_txt_paths_file_name(vault_name)             
+    txt_file_path = txt_paths_file_name(vault_name)             
 
     with open(txt_file_path, 'w', encoding='utf-8') as file:
         for item in vault_path.rglob("*"):
-            # print(item)
             file.write(f"{item}\n")
 
-def create_txt_paths_file_name(vault_name: str) -> Path:
+def txt_paths_file_name(vault_name: str) -> Path:
     """
-    Creates the file name for the .txt file that will store the paths of all files in the vault. 
+    Returns the file name for the .txt file that will store the paths of all files in the vault. 
     The file name is created by appending the suffix '_paths.txt' to the vault name.
+    
     :param vault_name: The name of the vault.
     :type vault_name: str
     :return: The path to the .txt file.
     :rtype: Path
 
     """
-
+    
     return DATA_FOLDER / (vault_name + "_paths.txt")
