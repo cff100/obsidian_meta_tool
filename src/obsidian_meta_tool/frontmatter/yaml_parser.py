@@ -10,6 +10,20 @@ from obsidian_meta_tool.io.read import read_lines
 
 
 class FrontmatterStatus(Enum):
+    """
+    Enum representing the status of the frontmatter in a Markdown file.
+
+    :var VALID: Status indicating that the frontmatter is valid and can be parsed.
+    :vartype VALID: Literal['valid']
+    :var MISSING: Status indicating that the frontmatter is missing from the file.
+    :vartype MISSING: Literal['missing']
+    :var BROKEN: Status indicating that the frontmatter is present but not properly closed, making it unparseable.
+    :vartype BROKEN: Literal['broken']
+    :var EMPTY: Status indicating that the frontmatter is present but empty.
+    :vartype EMPTY: Literal['empty']
+    :var EMPTY_FILE: Status indicating that the file is empty.
+    :vartype EMPTY_FILE: Literal['empty_file']
+    """
     VALID = "valid"
     MISSING = "missing"
     BROKEN = "broken"
@@ -68,6 +82,16 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
 
     
 def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> Optional[Dict[str, Any]]:
+    """
+    Returns the YAML data from a Markdown file.
+
+    :param status: Status of the frontmatter.
+    :type status: FrontmatterStatus
+    :param frontmatter: Frontmatter string. `None` if the frontmatter is not valid.
+    :type frontmatter: Optional[str]
+    :return: Frontmatter dictionary or None if the `frontmatter` is not valid.
+    :rtype: Dict[str, Any]
+    """
 
     if status in (FrontmatterStatus.VALID, FrontmatterStatus.EMPTY):
         return parse_yaml(frontmatter)
@@ -82,7 +106,7 @@ def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
 
     :param frontmatter: File frontmatter. `None` if the frontmatter is None (empty).
     :type frontmatter: Optional[str]
-    :return: Frontmatter dictionary.
+    :return: Frontmatter dictionary or empty dictionary if the `frontmatter` is None.
     :rtype: Dict[str, Any]
     """
 

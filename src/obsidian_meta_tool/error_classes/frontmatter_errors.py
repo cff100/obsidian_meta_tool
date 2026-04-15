@@ -3,6 +3,8 @@ class FrontamatterError(Exception):
     """Base class for all frontmatter related errors."""
     pass
 
+
+
 class NoLinesError(FrontamatterError):
     """Raised when the file has no lines to process."""
     pass
