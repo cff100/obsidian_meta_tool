@@ -2,6 +2,7 @@
 FRONT_MATTER_TIMESTAMPS_PLUGIN_NAMES = ['created', 'modified']
 
 class TestFilesFrontmatters:
+    """This class contains the frontmatters used in the unit tests."""
 
     FRONTMATTER_COMMON_FILE_3 = \
 'aliases: alias_text\n\
