@@ -3,6 +3,8 @@ from pathlib import Path
 import json
 import datetime
 
+from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus
+
 
 def any_to_text(variable: Any) -> str | None:
     """
@@ -29,7 +31,7 @@ def any_to_text(variable: Any) -> str | None:
 
     return variable_text
 
-def text_to_any(variable_text: str, type_variable: type) -> Path | dict:
+def text_to_any(variable_text: str, type_variable: type) -> Path | dict | str | FrontmatterStatus:
     """
     Converts a string representation of a variable back to its original type.
     
@@ -45,6 +47,10 @@ def text_to_any(variable_text: str, type_variable: type) -> Path | dict:
         variable = Path(variable_text)
     elif type_variable == dict:
         variable = json.loads(variable_text)
+    elif type_variable == FrontmatterStatus:
+        variable = FrontmatterStatus(variable_text)
+    else:
+        variable = variable_text
 
     return variable
 
