@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from obsidian_meta_tool.io.read import read_lines
-from obsidian_meta_tool.config.paths import txt_paths_file_name, capture_vault_file_paths
+from obsidian_meta_tool.config.paths import DataPaths as dp
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.database.data_serialization import any_to_text
 
@@ -16,8 +16,8 @@ def create_file_path_list(vault_name: str) -> list[str]:
     :rtype: list[str]
     """
 
-    txt_file_path = txt_paths_file_name(vault_name)
-    capture_vault_file_paths(vault_name)
+    txt_file_path = dp.txt_paths_file_name(vault_name)
+    dp.capture_vault_file_paths(vault_name)
 
     lines = read_lines(txt_file_path)
     lines_without_newline_character = [line.replace("\n", "") for line in lines]

@@ -1,9 +1,9 @@
 import sqlite3
 from pathlib import Path
 
-from obsidian_meta_tool.config.paths import SQL_DATABASE_PATH
+from obsidian_meta_tool.config.paths import DataPaths as dp
 
-def create_database(database_path: str = SQL_DATABASE_PATH, replace: bool = False) -> None:
+def create_database(database_path: str = dp.SQL_DATABASE_PATH, replace: bool = False) -> None:
     """
     Creates a SQLite database with a table for storing file metadata if it doesn't already exist.
     If it exists, nothing is done.
