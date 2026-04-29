@@ -25,7 +25,7 @@ def create_file_path_list(vault_name: str) -> list[str]:
     return lines_without_newline_character
 
 
-def create_filename_list(vault_name: str) -> list[str]:
+def create_filename_list(file_paths: list[str]) -> list[str]:
     """
     Create filename list.
 
@@ -35,14 +35,22 @@ def create_filename_list(vault_name: str) -> list[str]:
     :rtype: list[str]
     """
 
-    file_paths = create_file_path_list(vault_name)
-
     filenames_list = [str(Path(file_path).stem) for file_path in file_paths]
 
     return filenames_list
 
+# def create_inicial_folder_name_list(vault_name: str) -> list[str]:
+#     """
+#     Create inicial folder list.
 
-def create_extension_list(vault_name: str) -> list[str]:
+#     :param: vault_name: The name of the vault.
+#     :type vault_name: str
+#     :return: A list of inicial folders names .
+#     :rtype: list[str] 
+#     """
+
+
+def create_extension_list(file_paths: list[str]) -> list[str]:
     """
     Create extension list.
 
@@ -52,14 +60,12 @@ def create_extension_list(vault_name: str) -> list[str]:
     :rtype: list[str] 
     """
 
-    file_paths = create_file_path_list(vault_name)
-
     extensions_list = [str(Path(file_path).suffix) for file_path in file_paths]
 
     return extensions_list
 
 
-def create_properties_and_status(vault_name: str) -> tuple[list[str], list[None | dict]]:
+def create_properties_and_status(file_paths: list[str]) -> tuple[list[str], list[None | dict]]:
     """
     Create properties and status list.
 
@@ -69,12 +75,12 @@ def create_properties_and_status(vault_name: str) -> tuple[list[str], list[None 
     :rtype: tuple[list[str], list[None | dict]]
     """
 
-    file_paths = [Path(file_path_str) for file_path_str in create_file_path_list(vault_name)]
+    file_paths_ = [Path(file_path_str) for file_path_str in file_paths]
 
     properties_status_list = []
     properties_list = []
 
-    for file_path in file_paths:
+    for file_path in file_paths_:
         if file_path.is_file() and file_path.suffix == ".md":
             properties_status, data = retrieve_yaml_data(file_path)
             properties_status_list.append(properties_status.value)
@@ -96,12 +102,24 @@ def organize_all_data(vault_name: str) -> list[tuple]:
     :rtype: list[tuple]
     """
 
-    file_paths = create_file_path_list(vault_name)
-    filenames = create_filename_list(vault_name)
-    extensions = create_extension_list(vault_name)
-    properties_status_list, properties_list = create_properties_and_status(vault_name)
+    functions = [create_file_path_list, create_filename_list, create_inicial_folder_name_list, create_extension_list, create_properties_and_status]
+    variables_names = ["file_paths", "filenames", "inicial_folder", "extensions", "properties_status_list", "properties_list"]
+    variables = {}
+    for i, function in enumerate(functions):
+        if i == 0:
+            variables[variables_names[i]] = function(vault_name)
+        else:
+            variables[variables_names[i]] = function(variables["file_paths"])
+
+    # file_paths = create_file_path_list(vault_name)
+    # filenames = create_filename_list(vault_name)
+    # #inicial_folder = create_inicial_folder_name_list(vault_name)
+    # extensions = create_extension_list(vault_name)
+    # properties_status_list, properties_list = create_properties_and_status(vault_name)
 
     all_data = []
+
+    for keys in list(variables.keys()):
 
     for file_path, filename, extension, properties_status, properties in zip(file_paths, filenames, extensions, properties_status_list, properties_list):
         each_data = tuple([any_to_text(x) for x in [file_path, filename, extension, properties_status, properties]])

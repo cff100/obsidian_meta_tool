@@ -15,6 +15,7 @@ def update_database(database_path: str = dp.SQL_DATABASE_PATH) -> None:
     """
     
     create_database(database_path)
+    print("Updating database...")
     all_data = organize_all_data("cognitio_vitae_2")
     insert_values(all_data, database_path)
 
@@ -35,7 +36,7 @@ def insert_values(values: list[tuple], database_path: str = dp.SQL_DATABASE_PATH
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
 
-    cursor.executemany("INSERT INTO files (filepath, filename, extension, frontmatter_status, frontmatter) VALUES (?, ?, ?, ?, ?)", values)
+    cursor.executemany("INSERT INTO files (filepath, filename, inicial_folder, extension, frontmatter_status, frontmatter) VALUES (?, ?, ?, ?, ?, ?)", values)
     connection.commit()
     connection.close()
 

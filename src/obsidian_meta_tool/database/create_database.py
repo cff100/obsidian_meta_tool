@@ -32,6 +32,7 @@ def create_database(database_path: str = dp.SQL_DATABASE_PATH, replace: bool = F
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filepath TEXT NOT NULL,
                 filename TEXT NOT NULL,
+                inicial_folder TEXT NOT NULL,
                 extension TEXT,
                 frontmatter_status TEXT,
                 frontmatter TEXT

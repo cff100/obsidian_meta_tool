@@ -1,6 +1,6 @@
 from pathlib import Path
 
-def read_lines(path: Path) -> list:
+def read_lines(path: Path) -> list[str]:
     """
     Reads the lines of a file and returns them as a list. 
 
