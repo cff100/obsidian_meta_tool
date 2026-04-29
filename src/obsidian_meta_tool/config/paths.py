@@ -12,9 +12,9 @@ class DataPaths:
 
     SQL_DATABASE_PATH = str(DATA_FOLDER / "all_files.db")
 
-    DATAFRAME_FOLDER = DATA_FOLDER / "dataframes"
+    CSV_FOLDER = DATA_FOLDER / "csv"
 
-    GENERAL_DATAFRAME_PATH = DATAFRAME_FOLDER / "general_dataframe.csv"
+    GENERAL_DATAFRAME_PATH = CSV_FOLDER / "general_dataframe.csv"
 
 
 
