@@ -4,6 +4,7 @@ from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.paths import DataPaths as dp
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.database.data_serialization import any_to_text
+from obsidian_meta_tool.utils.access_config import access_vault_path
 
 
 def create_file_path_list(vault_name: str) -> list[str]:
@@ -39,15 +40,18 @@ def create_filename_list(file_paths: list[str]) -> list[str]:
 
     return filenames_list
 
-# def create_inicial_folder_name_list(vault_name: str) -> list[str]:
-#     """
-#     Create inicial folder list.
+def create_inicial_folder_name_list(file_paths: list[str], vault_name: str) -> list[str]:
+    """
+    Create inicial folder list.
 
-#     :param: vault_name: The name of the vault.
-#     :type vault_name: str
-#     :return: A list of inicial folders names .
-#     :rtype: list[str] 
-#     """
+    :param: vault_name: The name of the vault.
+    :type vault_name: str
+    :return: A list of inicial folders names .
+    :rtype: list[str] 
+    """
+
+    vault_path = access_vault_path(vault_name)
+    #new_file_paths = [str(Path(file_path).parent for file_path in file_paths)]
 
 
 def create_extension_list(file_paths: list[str]) -> list[str]:
@@ -102,14 +106,15 @@ def organize_all_data(vault_name: str) -> list[tuple]:
     :rtype: list[tuple]
     """
 
+    FILE_PATHS_NAME = "file_paths"
     functions = [create_file_path_list, create_filename_list, create_inicial_folder_name_list, create_extension_list, create_properties_and_status]
-    variables_names = ["file_paths", "filenames", "inicial_folder", "extensions", "properties_status_list", "properties_list"]
+    variables_names = [FILE_PATHS_NAME, "filenames", "inicial_folder", "extensions", "properties_status_list", "properties_list"]
     variables = {}
     for i, function in enumerate(functions):
         if i == 0:
             variables[variables_names[i]] = function(vault_name)
         else:
-            variables[variables_names[i]] = function(variables["file_paths"])
+            variables[variables_names[i]] = function(variables[FILE_PATHS_NAME])
 
     # file_paths = create_file_path_list(vault_name)
     # filenames = create_filename_list(vault_name)
@@ -119,7 +124,7 @@ def organize_all_data(vault_name: str) -> list[tuple]:
 
     all_data = []
 
-    for keys in list(variables.keys()):
+    for file_path, filename, extension, properties_status, properties in zip(variables[x] for x in variables_names)
 
     for file_path, filename, extension, properties_status, properties in zip(file_paths, filenames, extensions, properties_status_list, properties_list):
         each_data = tuple([any_to_text(x) for x in [file_path, filename, extension, properties_status, properties]])
