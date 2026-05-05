@@ -1,6 +1,15 @@
 
 FRONT_MATTER_TIMESTAMPS_PLUGIN_NAMES = ['created', 'modified']
 
+class ConfigNames:
+    """This class contains the names of the configuration keys."""
+
+    VAULTS_PATHS = "vaults_paths"
+    VAULTS_NAMES = "vaults_names"
+
+    DEFAULT_VAULT_NAME_OPTION = "option_1"
+
+
 class TestFilesFrontmatters:
     """This class contains the frontmatters used in the unit tests."""
 

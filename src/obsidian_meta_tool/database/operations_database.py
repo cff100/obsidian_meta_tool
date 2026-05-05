@@ -3,9 +3,12 @@ import sqlite3
 from obsidian_meta_tool.config.paths import DataPaths as dp
 from obsidian_meta_tool.database.create_database import create_database
 from obsidian_meta_tool.database.variables import organize_all_data
+from obsidian_meta_tool.config.constants import ConfigNames
+from obsidian_meta_tool.utils.access_config import access_vault_name
 
 
-def update_database(database_path: str = dp.SQL_DATABASE_PATH) -> None:
+
+def update_database(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION, database_path: str = dp.SQL_DATABASE_PATH) -> None:
     """
     Update the database with the latest data from the Obsidian vault. 
     This function will create the database if it doesn't exist, and then insert all the organized data into it.
@@ -15,8 +18,9 @@ def update_database(database_path: str = dp.SQL_DATABASE_PATH) -> None:
     """
     
     create_database(database_path)
+    vault_name = access_vault_name(option_vault_name)
     print("Updating database...")
-    all_data = organize_all_data("cognitio_vitae_2")
+    all_data = organize_all_data(vault_name)
     insert_values(all_data, database_path)
 
     print("Database updated.")
