@@ -5,6 +5,7 @@ from obsidian_meta_tool.database.create_database import create_database
 from obsidian_meta_tool.database.variables import organize_all_data
 from obsidian_meta_tool.config.constants import ConfigNames
 from obsidian_meta_tool.utils.access_config import access_vault_name
+from obsidian_meta_tool.database.create_database import create_database
 
 
 
@@ -17,7 +18,7 @@ def update_database(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NAME_OPTI
     :type database_path: str
     """
     
-    create_database(database_path)
+    create_database(database_path, replace=True)
     vault_name = access_vault_name(option_vault_name)
     print("Updating database...")
     all_data = organize_all_data(vault_name)

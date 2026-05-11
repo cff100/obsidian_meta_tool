@@ -18,6 +18,9 @@ def inicialize_config() -> configparser.ConfigParser:
 
 def auto_access_vault_path(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
     """
+    Accesses the path of a vault given its representative option, as specified in the config.ini file. 
+    The option should be a key in the 'vault_names' section of the config.ini file.
+
     :param option_vault_name: The option that specifies the vault to access. Defaults to DEFAULT_VAULT_NAME_OPTION.
     :type option_vault_name: str
     :return: The path to the vault

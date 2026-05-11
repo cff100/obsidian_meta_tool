@@ -83,3 +83,25 @@ class TestsFilesPaths:
 
     GOAL_FILE_1_PATH = TESTS_FILES_FOLDER / "goal_file_1.md"                
 
+
+def create_file_paths_document(vault_name: str) -> Path:
+
+    txt_file_paths_document = DataPaths.txt_paths_file_name(vault_name)
+    DataPaths.capture_vault_file_paths(vault_name)
+
+    return txt_file_paths_document
+
+
+def get_initial_folder_name(file_path: Path | str, vault_path: Path) -> str:
+
+    if isinstance(file_path, str):
+        file_path = Path(file_path)
+
+    inicial_folder_name = file_path.relative_to(vault_path)
+    #print(inicial_folder_name)
+    inicial_folder_name = inicial_folder_name.parts[0]
+    #print(inicial_folder_name)
+    inicial_folder_name = str(inicial_folder_name)
+    #print(inicial_folder_name)
+
+    return inicial_folder_name
