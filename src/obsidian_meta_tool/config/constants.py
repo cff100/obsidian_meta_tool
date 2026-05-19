@@ -5,6 +5,7 @@ class ConfigNames:
     """This class contains the names of the configuration keys."""
 
     VAULTS_PATHS = "vaults_paths"
+    PRATICAL_VAULTS_NAMES = "practicals_vaults_names"
     VAULTS_NAMES = "vaults_names"
 
     DEFAULT_VAULT_NAME_OPTION = "option_1"
