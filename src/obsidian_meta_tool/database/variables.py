@@ -90,7 +90,7 @@ def create_properties_and_status(file_paths: list[str]) -> tuple[list[str], list
 
     for file_path in file_paths_:
         if file_path.is_file() and file_path.suffix == ".md":
-            properties_status, data = retrieve_yaml_data(file_path)
+            properties_status, data = retrieve_yaml_data(read_lines(file_path))
             properties_status_list.append(properties_status.value)
         else:
             properties_status, data = None, None

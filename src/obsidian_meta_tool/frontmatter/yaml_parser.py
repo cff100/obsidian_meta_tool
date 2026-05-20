@@ -6,7 +6,7 @@ from ruamel.yaml import YAML, YAMLError
 
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
 from obsidian_meta_tool.error_classes import frontmatter_errors as fe
-from obsidian_meta_tool.io.read import read_lines
+
 
 
 class FrontmatterStatus(Enum):
@@ -31,24 +31,24 @@ class FrontmatterStatus(Enum):
     EMPTY_FILE = "empty_file"
 
 
-def retrieve_yaml_data(path: Path) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
+def retrieve_yaml_data(note_lines: list[str]) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
     """
     Returns the YAML data from a Markdown file.
 
-    :param path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
-    :type path: Path
+    :param note_path: Markdown file path. Pressuposed to be a valid path to a Markdown file.
+    :type note_path: Path
     :return: A tuple with the status of the frontmatter and the frontmatter data (if valid).
         The status can be "valid", "missing", "broken", "empty" or "empty_file". If the frontmatter is not valid, the second element of the tuple will be None.
     :rtype: tuple[FrontmatterStatus, Optional[Dict[str, Any]]]
     """
 
-    status, frontmatter = extract_frontmatter(path)
+    status, frontmatter = extract_frontmatter(note_lines)
     data = retrieve_existent_frontmatter(status, frontmatter)
 
     return status, data
 
 
-def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
+def extract_frontmatter(note_lines: list[str]) -> tuple[FrontmatterStatus, Optional[str]]:
     """
     Extracts the frontmatter from a Markdown file. 
     Returns a tuple with the status of the frontmatter and the frontmatter string (if valid). 
@@ -60,13 +60,11 @@ def extract_frontmatter(path: Path) -> tuple[FrontmatterStatus, Optional[str]]:
     :rtype: tuple[FrontmatterStatus, Optional[str]]
     """
 
-    lines = read_lines(path)
-
     #print(f"Lines: {lines}") # For debugging purposes
 
     try:
-        start, end = frontmatter_line_numbers(lines)
-        return FrontmatterStatus.VALID, "".join(lines[start:end+1])
+        start, end = frontmatter_line_numbers(note_lines)
+        return FrontmatterStatus.VALID, "".join(note_lines[start:end+1])
     
     except fe.NoLinesError:
         return FrontmatterStatus.EMPTY_FILE, None

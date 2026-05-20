@@ -8,6 +8,7 @@ from obsidian_meta_tool.frontmatter.yaml_parser import extract_frontmatter, \
                                                        retrieve_yaml_data
 
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus as fe
+from obsidian_meta_tool.io.read import read_lines
 
 
 class TestRetrieveYamlData:
@@ -28,12 +29,12 @@ class TestExtractFrontmatter:
   def test_valid_frontmatter(self):
     """Test extracting frontmatter from a file with valid YAML frontmatter."""
 
-    status, result = extract_frontmatter(tfp.COMMON_FILE_1_PATH)
+    status, result = extract_frontmatter(read_lines(tfp.COMMON_FILE_1_PATH))
     assert status == fe.VALID
     assert result == tff.EXPECTED_FRONTMATTER_COMMON_FILE_1
 
   def test_no_lines_error(self):
-    status, result = extract_frontmatter(tfp.EMPTY_FILE_PATH)
+    status, result = extract_frontmatter(read_lines(tfp.EMPTY_FILE_PATH))
     assert status == fe.EMPTY_FILE
     assert result == None
 
@@ -44,12 +45,12 @@ class TestExtractFrontmatter:
     assert result == None
 
   def test_unclosed_frontmatter_error(self):
-    status, result = extract_frontmatter(tfp.UNCLOSED_FRONTMATTER_FILE_PATH)
+    status, result = extract_frontmatter(read_lines(tfp.UNCLOSED_FRONTMATTER_FILE_PATH))
     assert status == fe.BROKEN
     assert result == None
 
   def test_empty_frontmatter_error(self):
-    status, result = extract_frontmatter(tfp.EMPTY_FRONTMATTER_FILE_PATH)
+    status, result = extract_frontmatter(read_lines(tfp.EMPTY_FRONTMATTER_FILE_PATH))
     assert status == fe.EMPTY
     assert result == None
 
