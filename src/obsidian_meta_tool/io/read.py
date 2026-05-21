@@ -1,3 +1,5 @@
+import csv
+
 from pathlib import Path
 
 def read_lines(path: Path) -> list[str]:
@@ -21,3 +23,9 @@ def read_lines(path: Path) -> list[str]:
         lines = []
 
     return lines
+
+def csv_reader(csv_path: Path):
+
+    with open(csv_path, 'r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        return reader

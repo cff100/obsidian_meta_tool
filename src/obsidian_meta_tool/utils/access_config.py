@@ -16,7 +16,7 @@ def inicialize_config() -> configparser.ConfigParser:
     config.read(CONFIG_INI_PATH, encoding='utf-8')
     return config
 
-def auto_access_vault_path(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
+def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> tuple[Path, str]:
     """
     Accesses the path of a vault given its representative option, as specified in the config.ini file. 
     The option should be a key in the 'vault_names' section of the config.ini file.
@@ -27,11 +27,15 @@ def auto_access_vault_path(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NA
     :rtype: Path
     """
 
-    vault_name = access_vault_name(option_vault_name)
-    return access_vault_path(vault_name)
+    config = inicialize_config()
+    vault_path = access_vault_path(config, vault_option)
+    vault_name = access_vault_name(config, vault_option)
+
+    return vault_path, vault_name
 
 
-def access_vault_path(vault_name: str) -> Path:
+
+def access_vault_path(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
     """
     Accesses the path of a vault given its name, as specified in the config.ini file. 
     The vault name should be a key in the 'vaults_paths' section of the config.ini file.
@@ -41,16 +45,15 @@ def access_vault_path(vault_name: str) -> Path:
     :return: The path to the vault
     :rtype: Path
     """
-    config = inicialize_config()
-    vault_path = Path(config[ConfigNames.VAULTS_PATHS][vault_name])
+
+    vault_path = Path(config[ConfigNames.VAULTS_PATHS][vault_option])
     if vault_path.exists():
         return vault_path
     else:
         raise FileNotFoundError
     
 
-def access_vault_name(option_vault_name: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION):
+def access_vault_name(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION):
 
-    config = inicialize_config()
-    vault_name = config[ConfigNames.VAULTS_NAMES][option_vault_name]
+    vault_name = config[ConfigNames.VAULTS_NAMES][vault_option]
     return vault_name

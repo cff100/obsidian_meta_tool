@@ -1,5 +1,8 @@
 from pathlib import Path
 
+from obsidian_meta_tool.config.constants import ConfigNames
+from obsidian_meta_tool.utils.access_config import auto_access_vault_values
+
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
 
 CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
@@ -19,7 +22,7 @@ class DataPaths:
 
 
     @staticmethod
-    def capture_vault_file_paths(vault_name: str) -> None:
+    def capture_vault_file_paths(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> None:
         """
         Captures the paths of all files in the vault and saves them to a .txt file in the data folder. 
         The .txt file is named after the vault, with the suffix '_paths.txt'.
@@ -28,9 +31,9 @@ class DataPaths:
         :type vault_name: str
         """
 
-        from obsidian_meta_tool.utils.access_config import access_vault_path
 
-        vault_path = access_vault_path(vault_name).resolve()
+        vault_path, vault_name = auto_access_vault_values(vault_option)
+        vault_path = vault_path.resolve()
 
         txt_file_path = DataPaths.txt_paths_file_name(vault_name)             
 
@@ -105,3 +108,10 @@ def get_initial_folder_name(file_path: Path | str, vault_path: Path) -> str:
     #print(inicial_folder_name)
 
     return inicial_folder_name
+
+def get_non_md_values_csv(vault_path: Path) -> Path:
+
+    non_md_values_csv = vault_path / "non_md_values.csv"
+    return non_md_values_csv
+
+
