@@ -1,5 +1,5 @@
 
-from obsidian_meta_tool.database.create_database import create_database
+from arquive.create_database import create_database
 
 """
 Parameters:

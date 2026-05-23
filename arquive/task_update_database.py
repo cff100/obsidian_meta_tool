@@ -1,5 +1,5 @@
 
-from obsidian_meta_tool.database.operations_database import update_database
+from arquive.operations_database import update_database
 
 """
 Parameters:

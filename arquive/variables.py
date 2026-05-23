@@ -3,7 +3,7 @@ from pathlib import Path
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.paths import DataPaths as dp, create_file_paths_document, get_initial_folder_name
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
-from obsidian_meta_tool.database.data_serialization import any_to_text
+from arquive.data_serialization import any_to_text
 from obsidian_meta_tool.utils.access_config import access_vault_path
 
 

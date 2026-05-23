@@ -1,5 +1,5 @@
 
-from obsidian_meta_tool.database.data_serialization import any_to_text
+from arquive.data_serialization import any_to_text
 from obsidian_meta_tool.config.constants import TestFilesFrontmatters as tff
 
 

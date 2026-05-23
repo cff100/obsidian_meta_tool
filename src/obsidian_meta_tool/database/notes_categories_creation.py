@@ -2,11 +2,12 @@ from pathlib import Path
 from typing import Any, Optional
 from enum import Enum
 import re
+import uuid
 
 
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.io.read import read_lines
-from obsidian_meta_tool.database.notes_id import add_ID_to_frontmatter
+from obsidian_meta_tool.config.constants import FRONTMATTER_ID
 
 class CategoriesNames(Enum):
     NOTE_PATH = "note_path"
@@ -37,7 +38,7 @@ def get_all_categories(note_path: Path, vault_path: Path) -> dict[CategoriesName
     note_filename = get_filename(note_path)
     initial_folder_name = get_initial_folder_name(note_path, vault_path)
     frontmatter_status, frontmatter = retrieve_yaml_data(note_lines)
-    frontmatter = add_ID_to_frontmatter(frontmatter)
+    frontmatter = NoteID.add_ID_to_frontmatter(frontmatter)
     note_body_tags = get_body_tags(note_lines)
     note_outgoing_links = get_outgoing_links(note_lines)
     
@@ -107,3 +108,27 @@ def get_outgoing_links(note_lines: list[str]) -> Optional[list[str]]:
     
     outgoing_links = list(set(outgoing_links))
     return outgoing_links
+
+
+class NoteID:
+
+    @staticmethod
+    def create_ID():
+        return str(uuid.uuid4())
+
+    @staticmethod
+    def add_ID_to_frontmatter(frontmatter: dict[str, Any] | None) -> dict[str, Any] | None:
+
+        if frontmatter == None:
+            return frontmatter
+        elif FRONTMATTER_ID in list(frontmatter.keys()):
+            return frontmatter
+    
+        id = NoteID.create_ID()
+        frontmatter[FRONTMATTER_ID] = id
+        return frontmatter
+
+    @staticmethod
+    def get_ID(frontmatter: dict) -> Optional[str]:
+
+        return frontmatter.get(FRONTMATTER_ID)

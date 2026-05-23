@@ -1,11 +1,11 @@
 import sqlite3
 
 from obsidian_meta_tool.config.paths import DataPaths as dp
-from obsidian_meta_tool.database.create_database import create_database
-from obsidian_meta_tool.database.variables import organize_all_data
+from arquive.create_database import create_database
+from arquive.variables import organize_all_data
 from obsidian_meta_tool.config.constants import ConfigNames
-from obsidian_meta_tool.utils.access_config import access_vault_name
-from obsidian_meta_tool.database.create_database import create_database
+from obsidian_meta_tool.config.config_structuration import access_vault_name
+from arquive.create_database import create_database
 
 
 

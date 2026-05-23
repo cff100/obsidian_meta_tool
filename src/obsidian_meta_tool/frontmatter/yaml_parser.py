@@ -5,7 +5,7 @@ from enum import Enum
 from ruamel.yaml import YAML, YAMLError
 
 from obsidian_meta_tool.utils.frontmatter_utils import frontmatter_line_numbers
-from obsidian_meta_tool.error_classes import frontmatter_errors as fe
+from obsidian_meta_tool.errors import frontmatter_errors as fe
 
 
 

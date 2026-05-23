@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 from obsidian_meta_tool.config.paths import DataPaths as dp
-from obsidian_meta_tool.database.data_serialization import text_to_any
+from arquive.data_serialization import text_to_any
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus
 
 
