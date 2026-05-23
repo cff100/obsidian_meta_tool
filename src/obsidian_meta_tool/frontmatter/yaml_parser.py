@@ -31,7 +31,7 @@ class FrontmatterStatus(Enum):
     EMPTY_FILE = "empty_file"
 
 
-def retrieve_yaml_data(note_lines: list[str]) -> tuple[FrontmatterStatus, Optional[Dict[str, Any]]]:
+def retrieve_yaml_data(note_lines: list[str]) -> tuple[FrontmatterStatus, Optional[dict[str, Any]]]:
     """
     Returns the YAML data from a Markdown file.
 
@@ -39,7 +39,7 @@ def retrieve_yaml_data(note_lines: list[str]) -> tuple[FrontmatterStatus, Option
     :type note_path: Path
     :return: A tuple with the status of the frontmatter and the frontmatter data (if valid).
         The status can be "valid", "missing", "broken", "empty" or "empty_file". If the frontmatter is not valid, the second element of the tuple will be None.
-    :rtype: tuple[FrontmatterStatus, Optional[Dict[str, Any]]]
+    :rtype: tuple[FrontmatterStatus, Optional[dict[str, Any]]]
     """
 
     status, frontmatter = extract_frontmatter(note_lines)
@@ -79,7 +79,7 @@ def extract_frontmatter(note_lines: list[str]) -> tuple[FrontmatterStatus, Optio
         return FrontmatterStatus.EMPTY, None
 
     
-def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> Optional[Dict[str, Any]]:
+def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | None) -> Optional[dict[str, Any]]:
     """
     Returns the YAML data from a Markdown file.
 
@@ -88,7 +88,7 @@ def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | 
     :param frontmatter: Frontmatter string. `None` if the frontmatter is not valid.
     :type frontmatter: Optional[str]
     :return: Frontmatter dictionary or None if the `frontmatter` is not valid.
-    :rtype: Dict[str, Any]
+    :rtype: dict[str, Any]
     """
 
     if status in (FrontmatterStatus.VALID, FrontmatterStatus.EMPTY):
@@ -98,14 +98,14 @@ def retrieve_existent_frontmatter(status: FrontmatterStatus, frontmatter: str | 
     
 
 yaml_parser = YAML(typ="safe")
-def parse_yaml(frontmatter: Optional[str]) -> Dict[str, Any]:
+def parse_yaml(frontmatter: Optional[str]) -> dict[str, Any]:
     """
     Converts the YAML frontmatter (string) into a Python dictionary.
 
     :param frontmatter: File frontmatter. `None` if the frontmatter is None (empty).
     :type frontmatter: Optional[str]
     :return: Frontmatter dictionary or empty dictionary if the `frontmatter` is None.
-    :rtype: Dict[str, Any]
+    :rtype: dict[str, Any]
     """
 
     if frontmatter is None:
