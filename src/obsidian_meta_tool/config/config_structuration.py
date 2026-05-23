@@ -2,13 +2,15 @@ from tkinter import filedialog, Tk
 from typing import Optional
 from pathlib import Path
 from unidecode import unidecode
+import configparser
 
-from obsidian_meta_tool.utils.access_config import inicialize_config
 from obsidian_meta_tool.config.constants import ConfigNames
-from obsidian_meta_tool.config.paths import CONFIG_INI_PATH
 
 
-def main(bypass_input: bool = False):
+CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
+
+
+def process_configuration(bypass_input: bool = False):
     """
     Manage the manipulation of the config.ini file.
 
@@ -135,8 +137,6 @@ def create_missing_config_categories(config) -> None:
     :param config: The config.ini file.
     :type config: configparser.ConfigParser
     """
-
-
     categories = [ConfigNames.VAULTS_PATHS, ConfigNames.PRATICAL_VAULTS_NAMES, ConfigNames.VAULTS_NAMES]
 
     for category in categories:
@@ -144,9 +144,81 @@ def create_missing_config_categories(config) -> None:
             config[category] = {}
 
 
+####### Configuration access
+
+
+def inicialize_config() -> configparser.ConfigParser:
+    
+    """
+    :return: Config variable
+    :rtype: ConfigParser
+    """
+
+    config = configparser.ConfigParser()
+    config.read(CONFIG_INI_PATH, encoding='utf-8')
+    return config
+
+def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> tuple[Path, str]:
+    """
+    Accesses the path of a vault given its representative option, as specified in the config.ini file. 
+    The option should be a key in the 'vault_names' section of the config.ini file.
+
+    :param option_vault_name: The option that specifies the vault to access. Defaults to DEFAULT_VAULT_NAME_OPTION.
+    :type option_vault_name: str
+    :return: The path to the vault
+    :rtype: Path
+    """
+
+    config = inicialize_config()
+    if is_config_file_empty(config):
+        process_configuration(True)
+        config = inicialize_config()
+
+    vault_path = access_vault_path(config, vault_option)
+    vault_name = access_vault_name(config, vault_option)
+
+    return vault_path, vault_name
+
+
+def is_config_file_empty(config: configparser.ConfigParser) -> bool:
+    """
+    Checks if the config.ini file is empty.
+
+    :param config: The config.ini file.
+    :type config: configparser.ConfigParser
+    
+    :return: `True` if the config.ini file is empty, `False` otherwise.
+    :rtype: bool
+    """
+
+    return not bool(config.sections())
 
 
 
+def access_vault_path(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
+    """
+    Accesses the path of a vault given its name, as specified in the config.ini file. 
+    The vault name should be a key in the 'vaults_paths' section of the config.ini file.
 
-if __name__ == "__main__":
-    main(True)
+    :param vault_name: The name of the vault
+    :type vault_name: str
+    :return: The path to the vault
+    :rtype: Path
+    """
+
+    vault_path = Path(config[ConfigNames.VAULTS_PATHS][vault_option])
+    if vault_path.exists():
+        return vault_path
+    else:
+        raise FileNotFoundError
+    
+
+def access_vault_name(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION):
+
+    vault_name = config[ConfigNames.VAULTS_NAMES][vault_option]
+    return vault_name
+
+
+
+# if __name__ == "__main__":
+#     process_configuration(True)

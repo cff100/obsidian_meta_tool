@@ -1,12 +1,9 @@
 from pathlib import Path
 
 from obsidian_meta_tool.config.constants import ConfigNames
-from obsidian_meta_tool.utils.access_config import auto_access_vault_values
+from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
 
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
-
-CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
-
 
 class DataPaths:
     """This class contains the paths to the data files."""
@@ -87,10 +84,11 @@ class TestsFilesPaths:
     GOAL_FILE_1_PATH = TESTS_FILES_FOLDER / "goal_file_1.md"                
 
 
-def create_file_paths_document(vault_name: str) -> Path:
+def create_file_paths_document(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
 
+    _, vault_name = auto_access_vault_values(vault_option)
     txt_file_paths_document = DataPaths.txt_paths_file_name(vault_name)
-    DataPaths.capture_vault_file_paths(vault_name)
+    DataPaths.capture_vault_file_paths(vault_option)
 
     return txt_file_paths_document
 
