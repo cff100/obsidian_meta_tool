@@ -1,6 +1,6 @@
 from typing import Optional
 
-from obsidian_meta_tool.error_classes import frontmatter_errors as fe
+from obsidian_meta_tool.errors import frontmatter_errors as fe
 
 def frontmatter_line_numbers(file_lines: list[str]) -> tuple[int,int]:
     """

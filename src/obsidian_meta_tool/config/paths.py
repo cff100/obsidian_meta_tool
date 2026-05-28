@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from obsidian_meta_tool.config.constants import ConfigNames
-from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
 
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
 
@@ -27,9 +26,9 @@ class DataPaths:
         :param vault_name: The name of the vault whose file paths are to be captured.
         :type vault_name: str
         """
+        from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
 
-
-        vault_path, vault_name = auto_access_vault_values(vault_option)
+        vault_path, vault_name = auto_access_vault_values(vault_option)[0], auto_access_vault_values(vault_option)[1]
         vault_path = vault_path.resolve()
 
         txt_file_path = DataPaths.txt_paths_file_name(vault_name)             
@@ -86,7 +85,9 @@ class TestsFilesPaths:
 
 def create_file_paths_document(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
 
-    _, vault_name = auto_access_vault_values(vault_option)
+    from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
+
+    vault_name = auto_access_vault_values(vault_option)[1]
     txt_file_paths_document = DataPaths.txt_paths_file_name(vault_name)
     DataPaths.capture_vault_file_paths(vault_option)
 

@@ -1,5 +1,5 @@
-from pathlib import Path
-from typing import Dict, Any, Optional
+
+from typing import Any, Optional
 from enum import Enum
 
 from ruamel.yaml import YAML, YAMLError

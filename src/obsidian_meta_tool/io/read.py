@@ -2,7 +2,7 @@ import csv
 
 from pathlib import Path
 
-def read_lines(path: Path) -> list[str]:
+def read_lines(path: Path, without_newline_character: bool = False, as_path: bool = False) -> list[str] | list[Path]:
     """
     Reads the lines of a file and returns them as a list. 
 
@@ -21,6 +21,12 @@ def read_lines(path: Path) -> list[str]:
     except UnicodeDecodeError:
         print(f"Encoding error in: {path}")
         lines = []
+
+    if without_newline_character:
+        lines = [line.replace("\n", "") for line in lines]
+
+    if as_path:
+        lines = [Path(line) for line in lines]
 
     return lines
 

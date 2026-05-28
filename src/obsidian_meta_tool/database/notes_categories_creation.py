@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, cast
 from enum import Enum
 import re
 import uuid
@@ -11,16 +11,17 @@ from obsidian_meta_tool.config.constants import FRONTMATTER_ID
 
 class CategoriesNames(Enum):
     NOTE_PATH = "note_path"
-    NOTE_EXTENSION = "note_extension"
     NOTE_FILENAME = "note_filename"
+    NOTE_EXTENSION = "note_extension"
     NOTE_INITIAL_FOLDER_NAME = "note_initial_folder_name"
-    NOTE_FRONTMATTER_STATUS = "note_frontmatter_status"
-    NOTE_FRONTMATTER = "note_frontmatter"
     NOTE_BODY_TAGS = "note_body_tags",
     NOTE_OUTGOING_LINKS = "note_outgoing_links"
+    NOTE_FRONTMATTER_STATUS = "note_frontmatter_status"
+    NOTE_FRONTMATTER = "note_frontmatter"
+    
 
 
-def get_all_categories(note_path: Path, vault_path: Path) -> dict[CategoriesNames, Any]:
+def get_all_categories_values(note_path: Path, vault_path: Path) -> dict[str, Any]:
     """
     Get all categories from a note.
 
@@ -33,27 +34,23 @@ def get_all_categories(note_path: Path, vault_path: Path) -> dict[CategoriesName
     """
 
     note_lines = read_lines(note_path)
+    note_lines = cast(list[str], note_lines)
 
     note_extension = get_extension(note_path)
     note_filename = get_filename(note_path)
     initial_folder_name = get_initial_folder_name(note_path, vault_path)
-    frontmatter_status, frontmatter = retrieve_yaml_data(note_lines)
+    frontmatter_status, frontmatter = retrieve_yaml_data(note_lines) 
     frontmatter = NoteID.add_ID_to_frontmatter(frontmatter)
-    note_body_tags = get_body_tags(note_lines)
-    note_outgoing_links = get_outgoing_links(note_lines)
-    
-    categories = {
-        CategoriesNames.NOTE_PATH: note_path, 
-        CategoriesNames.NOTE_EXTENSION: note_extension, 
-        CategoriesNames.NOTE_FILENAME: note_filename, 
-        CategoriesNames.NOTE_INITIAL_FOLDER_NAME: initial_folder_name, 
-        CategoriesNames.NOTE_FRONTMATTER_STATUS: frontmatter_status.value, 
-        CategoriesNames.NOTE_FRONTMATTER: frontmatter,
-        CategoriesNames.NOTE_BODY_TAGS: note_body_tags,
-        CategoriesNames.NOTE_OUTGOING_LINKS: note_outgoing_links
-        }
+    note_body_tags = get_body_tags(note_lines) 
+    note_outgoing_links = get_outgoing_links(note_lines) 
 
-    return categories
+    values = [note_path, note_filename, note_extension, initial_folder_name, note_body_tags, note_outgoing_links, frontmatter_status, frontmatter]
+    
+    categories_values = {}
+    for category, value in zip(CategoriesNames, values):
+        categories_values[category.value] = value
+        
+    return categories_values
 
 
 def get_extension(note_path: Path) -> str:

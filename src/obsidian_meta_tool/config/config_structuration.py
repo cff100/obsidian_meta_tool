@@ -1,14 +1,23 @@
 from tkinter import filedialog, Tk
-from typing import Optional
+from typing import Optional, cast
 from pathlib import Path
 from unidecode import unidecode
 import configparser
+from enum import Enum
 
 from obsidian_meta_tool.config.constants import ConfigNames
+from obsidian_meta_tool.config.paths import DataPaths
 
 
 CONFIG_INI_PATH = "src/obsidian_meta_tool/config/config.ini"
 
+class ValuesNames(Enum):
+    """This class contains the names of the values in the config.ini file."""
+
+    VAULT_PATH = "vault_path"
+    VAULT_NAME = "vault_name"
+    PRATICAL_VAULT_NAME = "pratical_vault_name"
+    NOTES_TXT_PATH = "notes_txt_path"
 
 def process_configuration(bypass_input: bool = False):
     """
@@ -24,11 +33,21 @@ def process_configuration(bypass_input: bool = False):
         return
     
     vault_name, pratical_vault_name = get_vault_names(vault_path)
+    notes_txt_path = str(DataPaths.txt_paths_file_name(vault_name))
     option = choose_config_option(bypass_input)
-    save_in_config(vault_name, pratical_vault_name, vault_path, option)
+
+    values = [vault_path, vault_name, pratical_vault_name, notes_txt_path]
+    values = cast(list[str], values)
 
 
-def choose_config_option(bypass_input) -> str:
+    values_dictionary = {}
+    for name, value in zip(ValuesNames, values):
+        values_dictionary[name.value] = value
+
+    save_in_config(values_dictionary, option)
+
+
+def choose_config_option(bypass_input: bool) -> str:
     """
     To choose the option used in config.ini.
 
@@ -103,45 +122,50 @@ def get_vault_names(vault_path: str | Path) -> tuple[str, str]:
     return vault_name, pratical_vault_name
     
 
-def save_in_config(vault_name: str, pratical_vault_name: str, vault_path: str, option: str) -> None:
+def save_in_config(values_dictionary: dict[str, str], option: str) -> None:
     """
     Save the vault path, vault name and pratical vault name in the config.ini file.
 
-    :param vault_name: The name of the vault.
-    :type vault_name: str
-    :param pratical_vault_name: The pratical name of the vault.
-    :type pratical_vault_name: str
-    :param vault_path: The path to the vault.
-    :type vault_path: str
     :param option: The option used in config.ini.
     :type option: str
     """
 
     config = inicialize_config()
 
-    create_missing_config_categories(config)
+    keys_list = list(values_dictionary.keys())
 
-    config[ConfigNames.VAULTS_PATHS][option] = vault_path
-    config[ConfigNames.VAULTS_NAMES][option] = vault_name
-    config[ConfigNames.PRATICAL_VAULTS_NAMES][option] = pratical_vault_name
-    
+    create_missing_config_categories(config, keys_list)
+
+    for key, value in values_dictionary.items():
+        config[key][option] = value
 
     with open(CONFIG_INI_PATH, 'w') as configfile:
         config.write(configfile)
 
 
-def create_missing_config_categories(config) -> None:
+def create_missing_config_categories(config: configparser.ConfigParser, keys_list: list) -> None:
     """
     To create missing categories in the config.ini file.
 
     :param config: The config.ini file.
     :type config: configparser.ConfigParser
     """
-    categories = [ConfigNames.VAULTS_PATHS, ConfigNames.PRATICAL_VAULTS_NAMES, ConfigNames.VAULTS_NAMES]
 
-    for category in categories:
+    is_missing = -1
+    
+    for category in keys_list:
         if category not in config:
+
+            if is_missing == 0:
+                print("There are missing categories in the config.ini file. Creating them...")
+                is_missing += 1
+
+            print(f"Creating category {category}")
             config[category] = {}
+
+        
+        
+        
 
 
 ####### Configuration access
@@ -158,7 +182,7 @@ def inicialize_config() -> configparser.ConfigParser:
     config.read(CONFIG_INI_PATH, encoding='utf-8')
     return config
 
-def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> tuple[Path, str]:
+def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> tuple[Path, str, Path, str]:
     """
     Accesses the path of a vault given its representative option, as specified in the config.ini file. 
     The option should be a key in the 'vault_names' section of the config.ini file.
@@ -171,13 +195,19 @@ def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_
 
     config = inicialize_config()
     if is_config_file_empty(config):
+        print("Config file is empty. Starting configuration...")
         process_configuration(True)
         config = inicialize_config()
 
     vault_path = access_vault_path(config, vault_option)
     vault_name = access_vault_name(config, vault_option)
+    notes_txt_path = access_notes_txt_path(config, vault_option)
+    pratical_vault_name = access_pratical_vault_name(config, vault_option)
 
-    return vault_path, vault_name
+
+    values = (vault_path, vault_name, notes_txt_path, pratical_vault_name)
+
+    return values
 
 
 def is_config_file_empty(config: configparser.ConfigParser) -> bool:
@@ -206,7 +236,7 @@ def access_vault_path(config: configparser.ConfigParser, vault_option: str = Con
     :rtype: Path
     """
 
-    vault_path = Path(config[ConfigNames.VAULTS_PATHS][vault_option])
+    vault_path = Path(config[ValuesNames.VAULT_PATH.value][vault_option])
     if vault_path.exists():
         return vault_path
     else:
@@ -215,10 +245,21 @@ def access_vault_path(config: configparser.ConfigParser, vault_option: str = Con
 
 def access_vault_name(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION):
 
-    vault_name = config[ConfigNames.VAULTS_NAMES][vault_option]
+    vault_name = config[ValuesNames.VAULT_NAME.value][vault_option]
     return vault_name
 
 
+def access_pratical_vault_name(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION):
 
-# if __name__ == "__main__":
-#     process_configuration(True)
+    pratical_vault_name = config[ValuesNames.PRATICAL_VAULT_NAME.value][vault_option]
+    return pratical_vault_name
+
+
+def access_notes_txt_path(config: configparser.ConfigParser, vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
+
+    notes_txt_path = Path(config[ValuesNames.NOTES_TXT_PATH.value][vault_option])
+
+    return notes_txt_path
+
+
+
