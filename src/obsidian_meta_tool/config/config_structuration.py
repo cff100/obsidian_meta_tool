@@ -1,5 +1,5 @@
 from tkinter import filedialog, Tk
-from typing import Optional, cast
+from typing import Optional, cast, Any
 from pathlib import Path
 from unidecode import unidecode
 import configparser
@@ -33,7 +33,7 @@ def process_configuration(bypass_input: bool = False):
         return
     
     vault_name, pratical_vault_name = get_vault_names(vault_path)
-    notes_txt_path = str(DataPaths.txt_paths_file_name(vault_name))
+    notes_txt_path = str(DataPaths.txt_paths_file_name(pratical_vault_name))
     option = choose_config_option(bypass_input)
 
     values = [vault_path, vault_name, pratical_vault_name, notes_txt_path]
@@ -182,7 +182,7 @@ def inicialize_config() -> configparser.ConfigParser:
     config.read(CONFIG_INI_PATH, encoding='utf-8')
     return config
 
-def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> tuple[Path, str, Path, str]:
+def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> dict[str, Any]:
     """
     Accesses the path of a vault given its representative option, as specified in the config.ini file. 
     The option should be a key in the 'vault_names' section of the config.ini file.
@@ -192,7 +192,7 @@ def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_
     :return: The path to the vault
     :rtype: Path
     """
-
+    
     config = inicialize_config()
     if is_config_file_empty(config):
         print("Config file is empty. Starting configuration...")
@@ -204,8 +204,11 @@ def auto_access_vault_values(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_
     notes_txt_path = access_notes_txt_path(config, vault_option)
     pratical_vault_name = access_pratical_vault_name(config, vault_option)
 
-
-    values = (vault_path, vault_name, notes_txt_path, pratical_vault_name)
+    values = {ValuesNames.VAULT_PATH.value: vault_path, 
+              ValuesNames.VAULT_NAME.value: vault_name, 
+              ValuesNames.NOTES_TXT_PATH.value: notes_txt_path, 
+              ValuesNames.PRATICAL_VAULT_NAME.value: pratical_vault_name
+            }
 
     return values
 

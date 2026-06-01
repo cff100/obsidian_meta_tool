@@ -2,16 +2,19 @@
 import pandas as pd 
 from pathlib import Path
 from typing import cast
+from time import sleep
 
 from obsidian_meta_tool.config.paths import ConfigNames
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, get_all_categories_values
 from obsidian_meta_tool.io.read import read_lines
-from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
+from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 
 
 def dataframe_creation(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> pd.DataFrame:
 
-    vault_path, notes_txt_path = auto_access_vault_values(vault_option)[0], auto_access_vault_values(vault_option)[2]
+    vault_path, notes_txt_path = auto_access_vault_values(vault_option)[ValuesNames.VAULT_PATH.value], \
+        auto_access_vault_values(vault_option)[ValuesNames.NOTES_TXT_PATH.value]
+    
     all_data = get_categories_values_all_notes(vault_path, notes_txt_path)
 
     df = pd.DataFrame(all_data, columns=[c.value for c in CategoriesNames])

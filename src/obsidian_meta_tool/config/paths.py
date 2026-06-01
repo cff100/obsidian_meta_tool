@@ -26,31 +26,32 @@ class DataPaths:
         :param vault_name: The name of the vault whose file paths are to be captured.
         :type vault_name: str
         """
-        from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
+        from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 
-        vault_path, vault_name = auto_access_vault_values(vault_option)[0], auto_access_vault_values(vault_option)[1]
+        vault_path, pratical_vault_name = auto_access_vault_values(vault_option)[ValuesNames.VAULT_PATH.value], \
+            auto_access_vault_values(vault_option)[ValuesNames.PRATICAL_VAULT_NAME.value]
         vault_path = vault_path.resolve()
 
-        txt_file_path = DataPaths.txt_paths_file_name(vault_name)             
+        txt_file_path = DataPaths.txt_paths_file_name(pratical_vault_name)             
 
         with open(txt_file_path, 'w', encoding='utf-8') as file:
             for item in vault_path.rglob("*"):
                 file.write(f"{item}\n")
 
     @staticmethod
-    def txt_paths_file_name(vault_name: str) -> Path:
+    def txt_paths_file_name(pratical_vault_name: str) -> Path:
         """
         Returns the file name for the .txt file that will store the paths of all files in the vault. 
-        The file name is created by appending the suffix '_paths.txt' to the vault name.
+        The file name is created by appending the suffix '_paths.txt' to the pratical vault name.
         
-        :param vault_name: The name of the vault.
+        :param vault_name: The pratical name of the vault.
         :type vault_name: str
         :return: The path to the .txt file.
         :rtype: Path
 
         """
         
-        return DataPaths.DATA_FOLDER / (vault_name + "_paths.txt")
+        return DataPaths.DATA_FOLDER / (pratical_vault_name + "_paths.txt")
     
 
 class TestsFilesPaths:
@@ -85,9 +86,9 @@ class TestsFilesPaths:
 
 def create_file_paths_document(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION) -> Path:
 
-    from obsidian_meta_tool.config.config_structuration import auto_access_vault_values
+    from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 
-    vault_name = auto_access_vault_values(vault_option)[1]
+    vault_name = auto_access_vault_values(vault_option)[ValuesNames.VAULT_NAME.value]
     txt_file_paths_document = DataPaths.txt_paths_file_name(vault_name)
     DataPaths.capture_vault_file_paths(vault_option)
 
