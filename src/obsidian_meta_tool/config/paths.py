@@ -13,7 +13,7 @@ class DataPaths:
 
     CSV_FOLDER = DATA_FOLDER / "csv"
 
-    GENERAL_DATAFRAME_PATH = CSV_FOLDER / "general_dataframe.csv"
+    GENERAL_DATAFRAME_PATH = DATA_FOLDER / "general_dataframe.parquet"
 
 
 

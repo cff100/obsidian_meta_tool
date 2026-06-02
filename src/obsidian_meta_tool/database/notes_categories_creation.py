@@ -8,6 +8,7 @@ import uuid
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.constants import FRONTMATTER_ID
+from obsidian_meta_tool.utils.extensions import is_text_file
 
 class CategoriesNames(Enum):
     NOTE_PATH = "note_path"
@@ -33,18 +34,30 @@ def get_all_categories_values(note_path: Path, vault_path: Path) -> dict[str, An
     :rtype: dict[CategoriesNames, Any]
     """
 
-    note_lines = read_lines(note_path)
-    note_lines = cast(list[str], note_lines)
+    if is_text_file(note_path):
+        print(f"{is_text_file(note_path)}")
+        note_lines = read_lines(note_path)
+        note_lines = cast(list[str], note_lines)
 
-    note_extension = get_extension(note_path)
-    note_filename = get_filename(note_path)
+        note_extension = get_extension(note_path)
+        note_filename = get_filename(note_path)
+
+        frontmatter_status, frontmatter = retrieve_yaml_data(note_lines)
+        frontmatter = NoteID.add_ID_to_frontmatter(frontmatter)
+
+        note_body_tags = get_body_tags(note_lines)
+        note_outgoing_links = get_outgoing_links(note_lines) 
+    else:
+        note_extension = None
+        note_filename = None
+        note_body_tags = None
+        note_outgoing_links = None
+        frontmatter_status = None
+        frontmatter = None
+
     initial_folder_name = get_initial_folder_name(note_path, vault_path)
-    frontmatter_status, frontmatter = retrieve_yaml_data(note_lines) 
-    frontmatter = NoteID.add_ID_to_frontmatter(frontmatter)
-    note_body_tags = get_body_tags(note_lines) 
-    note_outgoing_links = get_outgoing_links(note_lines) 
 
-    values = [note_path, note_filename, note_extension, initial_folder_name, note_body_tags, note_outgoing_links, frontmatter_status, frontmatter]
+    values = [str(note_path), note_filename, note_extension, initial_folder_name, note_body_tags, note_outgoing_links, frontmatter_status, frontmatter]
     
     categories_values = {}
     for category, value in zip(CategoriesNames, values):

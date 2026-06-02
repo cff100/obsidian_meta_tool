@@ -6,6 +6,7 @@ dependencies:
   - pandas
   - sqlalchemy
   - ruamel.yaml
+  # - pyarrow
   # e outros pacotes
   - pip
   - pip:

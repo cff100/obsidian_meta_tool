@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import cast
 from time import sleep
 
-from obsidian_meta_tool.config.paths import ConfigNames
+from obsidian_meta_tool.config.paths import ConfigNames, DataPaths
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, get_all_categories_values
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
@@ -18,6 +18,9 @@ def dataframe_creation(vault_option: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION
     all_data = get_categories_values_all_notes(vault_path, notes_txt_path)
 
     df = pd.DataFrame(all_data, columns=[c.value for c in CategoriesNames])
+
+    save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
+    
     return df
 
 
@@ -40,4 +43,4 @@ def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path) -> l
         
 if __name__ == "__main__":
     df = dataframe_creation()
-    print(df)
+    print(df.sample(20))
