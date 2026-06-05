@@ -15,7 +15,7 @@ class CategoriesNames(Enum):
     NOTE_FILENAME = "note_filename"
     NOTE_EXTENSION = "note_extension"
     NOTE_INITIAL_FOLDER_NAME = "note_initial_folder_name"
-    NOTE_BODY_TAGS = "note_body_tags",
+    NOTE_BODY_TAGS = "note_body_tags"
     NOTE_OUTGOING_LINKS = "note_outgoing_links"
     NOTE_FRONTMATTER_STATUS = "note_frontmatter_status"
     NOTE_FRONTMATTER = "note_frontmatter"

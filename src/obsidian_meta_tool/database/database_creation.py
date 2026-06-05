@@ -2,7 +2,6 @@
 import pandas as pd 
 from pathlib import Path
 from typing import cast
-from time import sleep
 
 from obsidian_meta_tool.config.paths import ConfigNames, DataPaths
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, get_all_categories_values
