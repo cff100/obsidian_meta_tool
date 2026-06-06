@@ -1,37 +1,39 @@
-import csv
-
 from pathlib import Path
 
-def read_lines(path: Path, without_newline_character: bool = False, as_path: bool = False) -> list[str] | list[Path]:
+def read_lines(path: Path, without_newline_character: bool = False) -> list[str]:
     """
-    Reads the lines of a file and returns them as a list. 
+    Reads the lines of a file and returns them as a list of strings.
 
     :param path: The path to the file to be read.
     :type path: Path
-    :return: A list of lines read from the file.
-    :rtype: list[Any]
+    :param without_newline_character: If True, removes trailing newline characters (\\r, \\n) from the end of each line.
+    :type without_newline_character: bool
+    :return: A list of string lines read from the file.
+    :rtype: list[str]
+    :raises FileNotFoundError: If the file does not exist at the specified path.
+    :raises PermissionError: If read access to the file is denied by the OS.
+    :raises UnicodeDecodeError: If the file content cannot be decoded using UTF-8.
     """
-    
-    try:
-        with path.open("r", encoding="utf-8") as file:
-            lines = file.readlines()
-    except PermissionError:
-        print(f"Access denied: {path}")
-        lines = []
-    except UnicodeDecodeError:
-        print(f"Encoding error in: {path}")
-        lines = []
+    with path.open("r", encoding="utf-8") as file:
+        if without_newline_character:
+            return file.read().splitlines()
+        return file.readlines()
 
-    if without_newline_character:
-        lines = [line.replace("\n", "") for line in lines]
 
-    if as_path:
-        lines = [Path(line) for line in lines]
+def read_file_paths(path: Path) -> list[Path]:
+    """
+    Reads a text file containing file paths (one per line) and returns them as a list of Path objects.
 
-    return lines
+    This function automatically handles trailing newline characters, sanitizes the text, 
+    and filters out any empty lines to prevent the creation of invalid or empty Path instances.
 
-def csv_reader(csv_path: Path):
-
-    with open(csv_path, 'r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        return reader
+    :param path: The path to the text file containing the list of file paths.
+    :type path: Path
+    :return: A list of valid Path objects extracted from the file lines.
+    :rtype: list[Path]
+    :raises FileNotFoundError: If the path configuration file does not exist.
+    :raises PermissionError: If read access to the file is denied by the OS.
+    :raises UnicodeDecodeError: If the file content cannot be decoded using UTF-8.
+    """
+    lines = read_lines(path, without_newline_character=True)
+    return [Path(line) for line in lines if line.strip()]

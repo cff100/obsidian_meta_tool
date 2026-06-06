@@ -5,7 +5,7 @@ from typing import cast
 
 from obsidian_meta_tool.config.paths import ConfigNames, DataPaths
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, get_all_categories_values
-from obsidian_meta_tool.io.read import read_lines
+from obsidian_meta_tool.io.read import read_file_paths
 from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 
 
@@ -29,8 +29,7 @@ def save_dataframe_as_parquet(df: pd.DataFrame, path: Path) -> None:
 
 def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path) -> list[dict]:
 
-    all_paths = read_lines(notes_txt_path, without_newline_character=True, as_path=True)
-    all_paths = cast(list[Path], all_paths)
+    all_paths = read_file_paths(notes_txt_path)
 
     categories_values_list = []
     for note_path in all_paths:
