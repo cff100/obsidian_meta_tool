@@ -140,4 +140,4 @@ def replace_data(
     updated_lines = replace_lines(lines, fm_start, fm_end, new_frontmatter_lines)
 
     # 4. Save the file
-    write_lines(resolved_goal_path, updated_lines)
+    write_lines(resolved_goal_path, updated_lines, create_parents = False)
