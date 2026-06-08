@@ -1,5 +1,5 @@
 
-from obsidian_meta_tool.config.paths import create_file_paths_document
+from obsidian_meta_tool.config.paths import DataPaths
 
 """
 Parameters:
@@ -7,4 +7,4 @@ Parameters:
 """
 
 if __name__ == "__main__":
-    create_file_paths_document()
+    DataPaths.capture_vault_file_paths()
