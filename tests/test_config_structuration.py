@@ -28,7 +28,7 @@ from obsidian_meta_tool.config.constants import ConfigNames
 def mock_config_path(tmp_path, monkeypatch):
     """Redireciona o CONFIG_INI_PATH para uma pasta temporária isolada."""
     test_config_file = tmp_path / "test_config.ini"
-    monkeypatch.setattr("seu_modulo_config.CONFIG_INI_PATH", test_config_file)
+    monkeypatch.setattr("obsidian_meta_tool.config.config_structuration.CONFIG_INI_PATH", test_config_file)
     return test_config_file
 
 
@@ -115,8 +115,8 @@ def test_select_vault_folder_success(monkeypatch):
     mock_tk_instance = MockTk()
     
     # Substituímos o Tkinter real pelos nossos Mocks inofensivos
-    monkeypatch.setattr("seu_modulo_config.Tk", lambda: mock_tk_instance)
-    monkeypatch.setattr("seu_modulo_config.filedialog.askdirectory", lambda **kw: "/fake/selecionado")
+    monkeypatch.setattr("obsidian_meta_tool.config.config_structuration.Tk", lambda: mock_tk_instance)
+    monkeypatch.setattr("obsidian_meta_tool.config.config_structuration.filedialog.askdirectory", lambda **kw: "/fake/selecionado")
     
     result = select_vault_folder()
     
