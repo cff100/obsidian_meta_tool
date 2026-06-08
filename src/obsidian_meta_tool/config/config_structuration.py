@@ -8,8 +8,10 @@ from unidecode import unidecode
 from obsidian_meta_tool.config.constants import ConfigNames
 from obsidian_meta_tool.config.paths import DataPaths
 
-CONFIG_INI_PATH = Path("src/obsidian_meta_tool/config/config.ini")
-
+# __file__ é o caminho do próprio config_structuration.py.
+# .parent pega a pasta onde ele está (obsidian_meta_tool/config/)
+# Isso garante que o config.ini nasça SEMPRE colado a este script.
+CONFIG_INI_PATH = Path(__file__).parent / "config.ini"
 
 class ValuesNames(Enum):
     """This class contains the names of the values in the config.ini file."""
