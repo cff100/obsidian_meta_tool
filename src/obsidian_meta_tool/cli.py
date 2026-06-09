@@ -2,8 +2,6 @@ import argparse
 
 from obsidian_meta_tool.config.config_structuration import process_configuration
 from obsidian_meta_tool.config.paths import DataPaths
-# from obsidian_meta_tool.database.database_creation import dataframe_creation
-
 
 def main():
     # 1. Cria o orquestrador principal
@@ -28,6 +26,12 @@ def main():
         action="store_true", 
         help="Automatically choose the default config option (option_1) without asking inputs."
     )
+    parser_config.add_argument(
+        "--choice", 
+        type=str, 
+        help="Specify an immediate option number to save the vault (e.g., '3' to save as option_3).", 
+        default=None
+    )
 
     # ==========================================
     # TASK 2: Mapeamento dos caminhos do vault
@@ -43,27 +47,13 @@ def main():
         default=None
     )
 
-    # ==========================================
-    # TASK 3: Banco de Dados 
-    # ==========================================
-    # parser_df = subparsers.add_parser(
-    #     "create-dataframe", 
-    #     help="Reads the captured paths and generates the master Parquet DataFrame."
-    # )
-    # parser_df.add_argument(
-    #     "--vault", 
-    #     type=str, 
-    #     help="Specify the vault option (e.g., option_2). Uses default if omitted.", 
-    #     default=None
-    # )
-
     # 3. Lê e interpreta o que o usuário digitou no terminal
     args = parser.parse_args()
 
     # 4. Executa a função correspondente ao comando escolhido
     if args.command == "config":
         print("Starting configuration...")
-        process_configuration(bypass_input=args.bypass)
+        process_configuration(bypass_input=args.bypass, immediate_choice=args.choice)
         print("Configuration complete!")
 
     elif args.command == "update-paths":
@@ -74,13 +64,6 @@ def main():
             DataPaths.capture_vault_file_paths()
         print("Paths captured and saved successfully!")
 
-    # elif args.command == "create-dataframe":
-    #     print("Building the general DataFrame...")
-    #     if args.vault:
-    #         dataframe_creation(vault_option=args.vault)
-    #     else:
-    #         dataframe_creation()
-    #     print("DataFrame generated successfully!")
 
     else:
         # Se o usuário rodar o arquivo sem passar nenhum comando, exibe a ajuda nativa
