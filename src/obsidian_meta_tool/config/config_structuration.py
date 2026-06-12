@@ -7,6 +7,7 @@ from unidecode import unidecode
 
 from obsidian_meta_tool.config.constants import ConfigNames
 from obsidian_meta_tool.config.paths import DataPaths
+from obsidian_meta_tool.utils.digit_option import digit_option_creation
 
 # __file__ é o caminho do próprio config_structuration.py.
 # .parent pega a pasta onde ele está (obsidian_meta_tool/config/)
@@ -37,7 +38,7 @@ def process_configuration(bypass_input: bool = False, immediate_choice: Optional
         return
     
     if not check_path_already_configured(vault_path, bypass_input):
-        print("Configuration aborted by the user.")
+        print("Configuration aborted.")
         return
     
     vault_name, practical_vault_name = get_vault_names(vault_path)
@@ -54,6 +55,7 @@ def process_configuration(bypass_input: bool = False, immediate_choice: Optional
 
     save_in_config(values_dictionary, option)
 
+    print("Configuration complete!")
 
 def check_path_already_configured(vault_path: str, bypass_input: bool) -> bool:
     """
@@ -81,12 +83,13 @@ def check_path_already_configured(vault_path: str, bypass_input: bool) -> bool:
                 print("Bypass active. Proceeding anyway...")
                 return True
                 
+            return False
             # Extrai apenas o número da opção (ex: option_3 -> 3) para facilitar a vida do usuário
-            opt_num = option_key.split('_')[1] if '_' in option_key else option_key
-            print(f"Tip: If you want to overwrite it, press 'Y' and type '{opt_num}' in the next step, if available.")
+            # opt_num = option_key.split('_')[1] if '_' in option_key else option_key
+            # print(f"Tip: If you want to overwrite it, press 'Y' and type '{opt_num}' in the next step, if available.")
             
-            proceed = input("Do you want to continue? (Press 'Y' to continue, 'N' to cancel): ").strip().upper()
-            return proceed == "Y"
+            # proceed = input("Do you want to continue? (Press 'Y' to continue, 'N' to cancel): ").strip().upper()
+            # return proceed == "Y"
             
     return True
 
@@ -116,6 +119,10 @@ def choose_config_option(bypass_input: bool = False, immediate_choice: Optional[
         while True:
             choice = choice.strip()
 
+            option = digit_option_creation(choice)
+            if option is not None:
+                break
+
             if choice == "":
                 option = default_option
                 break
@@ -134,7 +141,7 @@ def choose_config_option(bypass_input: bool = False, immediate_choice: Optional[
         if immediate_choice is not None or not bypass_input:
             print(already_used_config_message(config, option, existing_options))
             
-            user_response = input("Replace (press 'R' or leave it blank) or choose another option (press 'A')? ").strip().upper()
+            user_response = input("Replace (press 'R' or leave it blank) or choose another option (press 'A' or any other key)? ").strip().upper()
             replace = user_response in ("R", "")
             
             if not replace:

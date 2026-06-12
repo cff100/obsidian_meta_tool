@@ -43,7 +43,7 @@ def main():
     parser_paths.add_argument(
         "--vault", 
         type=str, 
-        help="Specify the vault option (e.g., option_2). Uses default (option_1) if omitted.", 
+        help="Specify the vault number option (e.g., 2). Uses default (1) if omitted.", 
         default=None
     )
 
@@ -54,12 +54,12 @@ def main():
     if args.command == "config":
         print("Starting configuration...")
         process_configuration(bypass_input=args.bypass, immediate_choice=args.choice)
-        print("Configuration complete!")
+        
 
     elif args.command == "update-paths":
         print("Capturing vault file paths...")
         if args.vault:
-            DataPaths.capture_vault_file_paths(vault_option=args.vault)
+            DataPaths.capture_vault_file_paths(vault_number_option=args.vault)
         else:
             DataPaths.capture_vault_file_paths()
         print("Paths captured and saved successfully!")
