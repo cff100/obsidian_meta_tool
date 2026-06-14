@@ -14,8 +14,6 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
     """
 
     vault_option = digit_option_creation(vault_option_digit)
-
-    vault_option = digit_option_creation(vault_option_digit)
     if vault_option is None:
         raise TypeError("A opção fornecida deve ser um dígito")
 
@@ -23,7 +21,7 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
     vault_path = vault_values[ValuesNames.VAULT_PATH.value]
     notes_txt_path = vault_values[ValuesNames.NOTES_TXT_PATH.value]
     
-    all_data = get_categories_values_all_notes(vault_path, notes_txt_path)
+    all_data = get_categories_values_all_notes(vault_path, notes_txt_path, vault_option_digit)
 
     df = pd.DataFrame(all_data, columns=[c.value for c in CategoriesNames])
 
@@ -39,7 +37,7 @@ def save_dataframe_as_parquet(df: pd.DataFrame, path: Path) -> None:
     df.to_parquet(path)
 
 
-def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path) -> list[dict]:
+def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path, vault_option_digit: str) -> list[dict]:
     """
     Iterates through all file paths, instantiates ObsidianNote objects, 
     and returns their dictionary representations.
@@ -47,7 +45,7 @@ def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path) -> l
     try:
         all_paths = read_file_paths(notes_txt_path)
     except FileNotFoundError:
-        # criar arquivo
+        notes_txt_path = DataPaths.capture_vault_file_paths(vault_option_digit)
         all_paths = read_file_paths(notes_txt_path)
 
     categories_values_list = []
@@ -62,4 +60,5 @@ def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path) -> l
 if __name__ == "__main__":
     df = dataframe_creation()
     print("DataFrame successfully generated. Showing a sample:")
-    print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
+    #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
+    print(df)

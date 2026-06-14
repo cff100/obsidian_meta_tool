@@ -128,6 +128,8 @@ class ObsidianNote:
                 CategoriesNames.NOTE_FRONTMATTER_STATUS.value: None,
                 CategoriesNames.NOTE_FRONTMATTER.value: None
             }
+        
+        status_value = self.frontmatter_status.value if self.frontmatter_status else None
 
         return {
             CategoriesNames.NOTE_PATH.value: str(self.path),
@@ -136,6 +138,6 @@ class ObsidianNote:
             CategoriesNames.NOTE_INITIAL_FOLDER_NAME.value: self.initial_folder_name,
             CategoriesNames.NOTE_BODY_TAGS.value: self.body_tags,
             CategoriesNames.NOTE_OUTGOING_LINKS.value: self.outgoing_links,
-            CategoriesNames.NOTE_FRONTMATTER_STATUS.value: self.frontmatter_status,
+            CategoriesNames.NOTE_FRONTMATTER_STATUS.value: status_value,
             CategoriesNames.NOTE_FRONTMATTER.value: self.frontmatter
         }
