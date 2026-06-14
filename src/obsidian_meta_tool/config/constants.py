@@ -7,3 +7,4 @@ class ConfigNames:
   """This class contains the names of the configuration keys."""
 
   DEFAULT_VAULT_NAME_OPTION = "option_1"
+  DEFAULT_VAULT_NAME_OPTION_DIGIT = "1"

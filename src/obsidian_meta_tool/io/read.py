@@ -35,5 +35,8 @@ def read_file_paths(path: Path) -> list[Path]:
     :raises PermissionError: If read access to the file is denied by the OS.
     :raises UnicodeDecodeError: If the file content cannot be decoded using UTF-8.
     """
+
     lines = read_lines(path, without_newline_character=True)
     return [Path(line) for line in lines if line.strip()]
+
+        

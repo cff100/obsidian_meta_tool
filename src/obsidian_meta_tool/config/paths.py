@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from obsidian_meta_tool.config.constants import ConfigNames
 from obsidian_meta_tool.utils.digit_option import digit_option_creation
+from obsidian_meta_tool.config.constants import ConfigNames
 
 PROJECT_ROOT_FOLDER = Path(__file__).parents[3]
 
@@ -16,7 +16,7 @@ class DataPaths:
     # CSV_FOLDER = DATA_FOLDER / "csv"
 
     @staticmethod
-    def capture_vault_file_paths(vault_number_option: str = "1") -> Path:
+    def capture_vault_file_paths(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION_DIGIT) -> Path:
         """
         Captures the paths of all real files in the vault and saves them to a .txt file. 
         
@@ -28,7 +28,7 @@ class DataPaths:
         # Local import to prevent circular dependencies at module initialization
         from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 
-        vault_option = digit_option_creation(vault_number_option)
+        vault_option = digit_option_creation(vault_option_digit)
 
         if vault_option is None:
             raise TypeError("A opção fornecida deve ser um dígito")

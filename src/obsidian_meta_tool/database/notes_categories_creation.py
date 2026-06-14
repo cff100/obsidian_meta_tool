@@ -1,15 +1,17 @@
-from pathlib import Path
-from typing import Any, Optional, cast
-from enum import Enum
+
 import re
 import uuid
-
+from enum import Enum
+from pathlib import Path
+from typing import Any, Optional
 
 from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.constants import FRONTMATTER_ID
+from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus
 
 class CategoriesNames(Enum):
+    """Names of the categories used as columns in the general DataFrame."""
     NOTE_PATH = "note_path"
     NOTE_FILENAME = "note_filename"
     NOTE_EXTENSION = "note_extension"
@@ -18,126 +20,122 @@ class CategoriesNames(Enum):
     NOTE_OUTGOING_LINKS = "note_outgoing_links"
     NOTE_FRONTMATTER_STATUS = "note_frontmatter_status"
     NOTE_FRONTMATTER = "note_frontmatter"
-    
 
 
-def get_all_categories_values(note_path: Path, vault_path: Path) -> dict[str, Any]:
-    """
-    Get all categories from a note.
+class ObsidianNote:
+    """Represents a single note within the Obsidian Vault, encapsulating all its metadata and logic."""
 
-    :param note_path: Path to the note.
-    :type note_path: Path
-    :param vault_path: Path to the vault.
-    :type vault_path: Path
-    :return: A dictionary with all categories.
-    :rtype: dict[CategoriesNames, Any]
-    """
-
-    if is_text_file(note_path):
-        print(f"{is_text_file(note_path)}")
-        note_lines = read_lines(note_path)
-        note_lines = cast(list[str], note_lines)
-
-        note_extension = get_extension(note_path)
-        note_filename = get_filename(note_path)
-
-        frontmatter_status, frontmatter, _, _ = retrieve_yaml_data(note_lines)
-        frontmatter = NoteID.add_ID_to_frontmatter(frontmatter)
-
-        note_body_tags = get_body_tags(note_lines)
-        note_outgoing_links = get_outgoing_links(note_lines) 
-    else:
-        note_extension = None
-        note_filename = None
-        note_body_tags = None
-        note_outgoing_links = None
-        frontmatter_status = None
-        frontmatter = None
-
-    initial_folder_name = get_initial_folder_name(note_path, vault_path)
-
-    values = [str(note_path), note_filename, note_extension, initial_folder_name, note_body_tags, note_outgoing_links, frontmatter_status, frontmatter]
-    
-    categories_values = {}
-    for category, value in zip(CategoriesNames, values):
-        categories_values[category.value] = value
+    def __init__(self, note_path: Path, vault_path: Path):
+        self.path = note_path
+        self.vault_path = vault_path
         
-    return categories_values
-
-
-def get_extension(note_path: Path) -> str:
-
-    note_extension = note_path.suffix
-    return note_extension
-
-
-def get_filename(note_path: Path) -> str:
-
-    note_filename = note_path.stem
-    return note_filename
-
-
-def get_initial_folder_name(note_path: Path, vault_path: Path) -> str:
-
-    initial_folder_name = note_path.relative_to(vault_path).parts[0]
-    return initial_folder_name
-
-
-def get_body_tags(note_lines: list[str]) -> Optional[list[str]]:
-
-    body_tags = []
-    for line in note_lines:
-        if "#" in line:
-            expressions = line.split()
-            for expression in expressions:
-                if expression.startswith("#"):
-                    tag = expression[1:]
-                    body_tags.append(tag)
+        # Internal state
+        self._lines: Optional[list[str]] = None
         
-    if not body_tags:
-        return None
+        # Attributes to be populated
+        self.frontmatter_status: Optional[FrontmatterStatus] = None
+        self.frontmatter: Optional[dict[str, Any]] = None
 
-    body_tags = list(set(body_tags))
-    return body_tags
+        if self.is_text_file():
+            self._load_file_data()
 
+    def is_text_file(self) -> bool:
+        """Checks if the file is a text file that can be parsed for markdown/YAML."""
+        return self.path.suffix.lower() == '.md'
 
-def get_outgoing_links(note_lines: list[str]) -> Optional[list[str]]:
+    def _load_file_data(self) -> None:
+        """Reads the file and initializes the frontmatter securely."""
+        # self._lines = cast(list[str], read_lines(self.path)) 
+        self._lines = read_lines(self.path)
+        status, fm, _, _ = retrieve_yaml_data(self._lines)
+        
+        self.frontmatter_status = status
+        self.frontmatter = self._ensure_frontmatter_id(fm)
 
-    outgoing_links = []
-    pattern = r"\[\[([^|\]]+)(?:\|[^\]]+)?\]\]"
+    def _ensure_frontmatter_id(self, fm: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
+        """Ensures the note has an ID in the frontmatter, creating one if missing."""
+        if fm is None:
+            return None
+        
+        if FRONTMATTER_ID not in fm:
+            fm[FRONTMATTER_ID] = str(uuid.uuid4())
+            # Nota para o futuro: Como o ID foi gerado apenas na memória aqui,
+            # no futuro você precisará de um método `self.save_frontmatter_to_disk()` 
+            # para gravar esse novo ID fisicamente no arquivo .md
+        
+        return fm
 
-    for line in note_lines:
-        if "[[" in line and "]]" in line:
-            line.split("[[")
-            line_outgoing_links = re.findall(pattern, line) 
-            outgoing_links.extend(line_outgoing_links)
-    
-    if not outgoing_links:
-        return None
-    
-    outgoing_links = list(set(outgoing_links))
-    return outgoing_links
+    @property
+    def filename(self) -> str:
+        return self.path.stem
 
+    @property
+    def extension(self) -> str:
+        return self.path.suffix
 
-class NoteID:
+    @property
+    def initial_folder_name(self) -> str:
+        """
+        Gets the first folder name inside the vault. 
+        If the note is in the root of the vault, returns '/' to avoid indexing errors.
+        """
+        relative = self.path.relative_to(self.vault_path)
+        if len(relative.parts) > 1:
+            return relative.parts[0]
+        return "/"
 
-    @staticmethod
-    def create_ID():
-        return str(uuid.uuid4())
+    @property
+    def body_tags(self) -> Optional[list[str]]:
+        if not self._lines:
+            return None
 
-    @staticmethod
-    def add_ID_to_frontmatter(frontmatter: dict[str, Any] | None) -> dict[str, Any] | None:
+        body_tags = []
+        for line in self._lines:
+            if "#" in line:
+                for expression in line.split():
+                    if expression.startswith("#") and len(expression) > 1:
+                        body_tags.append(expression[1:])
+        
+        return list(set(body_tags)) if body_tags else None
 
-        if frontmatter == None:
-            return frontmatter
-        elif FRONTMATTER_ID in list(frontmatter.keys()):
-            return frontmatter
-    
-        id = NoteID.create_ID()
-        frontmatter[FRONTMATTER_ID] = id
-        return frontmatter
+    @property
+    def outgoing_links(self) -> Optional[list[str]]:
+        if not self._lines:
+            return None
 
-    @staticmethod
-    def get_ID(frontmatter: dict) -> Optional[str]:
+        outgoing_links = []
+        pattern = r"\[\[([^|\]]+)(?:\|[^\]]+)?\]\]"
 
-        return frontmatter.get(FRONTMATTER_ID)
+        for line in self._lines:
+            if "[[" in line and "]]" in line:
+                outgoing_links.extend(re.findall(pattern, line))
+        
+        return list(set(outgoing_links)) if outgoing_links else None
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Converts the note's properties to a dictionary mapped strictly to CategoriesNames.
+        """
+        if not self.is_text_file():
+            # Retorna apenas o caminho e a pasta para arquivos não suportados (ex: .png, .pdf)
+            return {
+                CategoriesNames.NOTE_PATH.value: str(self.path),
+                CategoriesNames.NOTE_INITIAL_FOLDER_NAME.value: self.initial_folder_name,
+                CategoriesNames.NOTE_FILENAME.value: None,
+                CategoriesNames.NOTE_EXTENSION.value: None,
+                CategoriesNames.NOTE_BODY_TAGS.value: None,
+                CategoriesNames.NOTE_OUTGOING_LINKS.value: None,
+                CategoriesNames.NOTE_FRONTMATTER_STATUS.value: None,
+                CategoriesNames.NOTE_FRONTMATTER.value: None
+            }
+
+        return {
+            CategoriesNames.NOTE_PATH.value: str(self.path),
+            CategoriesNames.NOTE_FILENAME.value: self.filename,
+            CategoriesNames.NOTE_EXTENSION.value: self.extension,
+            CategoriesNames.NOTE_INITIAL_FOLDER_NAME.value: self.initial_folder_name,
+            CategoriesNames.NOTE_BODY_TAGS.value: self.body_tags,
+            CategoriesNames.NOTE_OUTGOING_LINKS.value: self.outgoing_links,
+            CategoriesNames.NOTE_FRONTMATTER_STATUS.value: self.frontmatter_status,
+            CategoriesNames.NOTE_FRONTMATTER.value: self.frontmatter
+        }

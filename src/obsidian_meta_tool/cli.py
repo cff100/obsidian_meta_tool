@@ -59,7 +59,7 @@ def main():
     elif args.command == "update-paths":
         print("Capturing vault file paths...")
         if args.vault:
-            DataPaths.capture_vault_file_paths(vault_number_option=args.vault)
+            DataPaths.capture_vault_file_paths(vault_option_digit=args.vault)
         else:
             DataPaths.capture_vault_file_paths()
         print("Paths captured and saved successfully!")
