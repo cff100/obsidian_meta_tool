@@ -1,4 +1,5 @@
 
+import json
 import pandas as pd 
 from pathlib import Path
 
@@ -27,6 +28,12 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
 
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    # # Converte frontmatter (dict ou None) para JSON string para compatibilidade com Parquet
+    # df['note_frontmatter'] = df['note_frontmatter'].apply(
+    #     lambda x: json.dumps(x, default=str) if x is not None else None
+    # )
+    
     save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
     
     return df

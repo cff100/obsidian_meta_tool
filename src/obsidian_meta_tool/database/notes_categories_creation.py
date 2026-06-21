@@ -51,6 +51,22 @@ class ObsidianNote:
         
         self.frontmatter_status = status
         self.frontmatter = self._ensure_frontmatter_id(fm)
+        self.frontmatter = self._convert_frontmatter_to_serializable()
+
+    def _convert_frontmatter_to_serializable(self) -> Optional[dict[str, Any]]:
+        """Converts the frontmatter to a JSON-serializable format, if necessary."""
+        if self.frontmatter is None:
+            return None
+        
+        serializable_fm = {}
+        for key, value in self.frontmatter.items():
+            if isinstance(value, (str, int, float, bool, type(None))):
+                serializable_fm[key] = value
+            else:
+                # For complex data types, it converts them to a string.
+                serializable_fm[key] = str(value)
+        
+        return serializable_fm
 
     def _ensure_frontmatter_id(self, fm: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
         """Ensures the note has an ID in the frontmatter, creating one if missing."""
@@ -59,9 +75,9 @@ class ObsidianNote:
         
         if FRONTMATTER_ID not in fm:
             fm[FRONTMATTER_ID] = str(uuid.uuid4())
-            # Nota para o futuro: Como o ID foi gerado apenas na memória aqui,
-            # no futuro você precisará de um método `self.save_frontmatter_to_disk()` 
-            # para gravar esse novo ID fisicamente no arquivo .md
+            # Note for the future: Since the ID was generated only in memory here,
+            # in the future you will need a method `self.save_frontmatter_to_disk()` 
+            # to write this new ID physically to the .md file
         
         return fm
 
