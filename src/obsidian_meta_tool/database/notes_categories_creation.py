@@ -53,6 +53,19 @@ class ObsidianNote:
         self.frontmatter = self._ensure_frontmatter_id(fm)
         self.frontmatter = self._convert_frontmatter_to_serializable()
 
+    def _ensure_frontmatter_id(self, fm: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
+        """Ensures the note has an ID in the frontmatter, creating one if missing."""
+        if fm is None:
+            return None
+        
+        if FRONTMATTER_ID not in fm:
+            fm[FRONTMATTER_ID] = str(uuid.uuid4())
+            # Note for the future: Since the ID was generated only in memory here,
+            # in the future you will need a method `self.save_frontmatter_to_disk()` 
+            # to write this new ID physically to the .md file
+        
+        return fm
+    
     def _convert_frontmatter_to_serializable(self) -> Optional[dict[str, Any]]:
         """Converts the frontmatter to a JSON-serializable format, if necessary."""
         if self.frontmatter is None:
@@ -67,19 +80,6 @@ class ObsidianNote:
                 serializable_fm[key] = str(value)
         
         return serializable_fm
-
-    def _ensure_frontmatter_id(self, fm: Optional[dict[str, Any]]) -> Optional[dict[str, Any]]:
-        """Ensures the note has an ID in the frontmatter, creating one if missing."""
-        if fm is None:
-            return None
-        
-        if FRONTMATTER_ID not in fm:
-            fm[FRONTMATTER_ID] = str(uuid.uuid4())
-            # Note for the future: Since the ID was generated only in memory here,
-            # in the future you will need a method `self.save_frontmatter_to_disk()` 
-            # to write this new ID physically to the .md file
-        
-        return fm
 
     @property
     def filename(self) -> str:

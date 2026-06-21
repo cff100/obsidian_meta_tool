@@ -13,6 +13,7 @@ dependencies:
     - -e .
     - pytest
     - Unidecode
+    - tabulate
     #- pytest-cov
     # outros pacotes pip que você usa
 

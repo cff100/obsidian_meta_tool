@@ -1,7 +1,7 @@
 
-import json
 import pandas as pd 
 from pathlib import Path
+import tabulate
 
 from obsidian_meta_tool.config.paths import ConfigNames, DataPaths
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, ObsidianNote
@@ -28,12 +28,6 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
 
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    # # Converte frontmatter (dict ou None) para JSON string para compatibilidade com Parquet
-    # df['note_frontmatter'] = df['note_frontmatter'].apply(
-    #     lambda x: json.dumps(x, default=str) if x is not None else None
-    # )
-    
     save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
     
     return df
@@ -68,4 +62,6 @@ if __name__ == "__main__":
     df = dataframe_creation()
     print("DataFrame successfully generated. Showing a sample:")
     #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
-    print(df)
+    # print(df["note_frontmatter"])
+    columns = ["note_path", "note_filename"]
+    print(df[columns].to_markdown())
