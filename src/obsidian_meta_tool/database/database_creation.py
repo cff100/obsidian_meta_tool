@@ -63,5 +63,6 @@ if __name__ == "__main__":
     print("DataFrame successfully generated. Showing a sample:")
     #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
     # print(df["note_frontmatter"])
-    columns = ["note_path", "note_filename"]
-    print(df[columns].to_markdown())
+    column = "note_path"
+    # print(df[column].to_markdown())
+    print(df[column].value_counts().sample(10))
