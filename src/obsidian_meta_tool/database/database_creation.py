@@ -63,6 +63,7 @@ if __name__ == "__main__":
     print("DataFrame successfully generated. Showing a sample:")
     #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
     # print(df["note_frontmatter"])
-    column = "note_path"
+    column = "note_initial_folder_name"
     # print(df[column].to_markdown())
-    print(df[column].value_counts().sample(10))
+    print(df[column].value_counts().sample(11))
+    print(df["note_path"][df[column] == "/"].to_markdown())
