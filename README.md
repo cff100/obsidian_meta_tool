@@ -52,7 +52,11 @@ pip install -r requirements.txt
 
 ⚠️ **Importante:** Como a ferramenta realiza alterações em arquivos locais, é altamente recomendável fazer um backup completo do seu vault antes de testar ou executar operações de edição em massa.
 
-Leia: [cli.py](src/obsidian_meta_tool/cli.py)
+Para mais informações: [cli.py](src/obsidian_meta_tool/cli.py)
+
+### TASK 1: Configuração (do config.ini)
+
+### TASK 2: Mapeamento dos caminhos do vault
 
 ## 📄 Licença
 Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
