@@ -1,0 +1,3 @@
+from obsidian_meta_tool.config.paths import capture_vault_file_paths
+
+capture_vault_file_paths("cognitio_vitae_2")
