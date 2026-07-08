@@ -1,13 +1,13 @@
 
 import pandas as pd 
 from pathlib import Path
-import tabulate
 
 from obsidian_meta_tool.config.paths import ConfigNames, DataPaths
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames, ObsidianNote
 from obsidian_meta_tool.io.read import read_file_paths
 from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 from obsidian_meta_tool.utils.digit_option import digit_option_creation
+from obsidian_meta_tool.io.save_data import save_dataframe_as_parquet, save_dataframe_as_csv
 
 def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION_DIGIT) -> pd.DataFrame:
     """
@@ -29,13 +29,9 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)
     save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
+    save_sample_dataframe_as_csv(df, DataPaths.SAMPLE_CSV_PATH)
     
     return df
-
-
-def save_dataframe_as_parquet(df: pd.DataFrame, path: Path) -> None:
-    """Saves the pandas DataFrame physically to the specified path."""
-    df.to_parquet(path)
 
 
 def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path, vault_option_digit: str) -> list[dict]:
@@ -57,6 +53,13 @@ def get_categories_values_all_notes(vault_path: Path, notes_txt_path: Path, vaul
     
     return categories_values_list
         
+def save_sample_dataframe_as_csv(df: pd.DataFrame, path: Path) -> None:
+    """
+    Saves a sample of the DataFrame as a CSV file.
+    """
+    sample = df.sample(n=min(100, len(df)))
+    save_dataframe_as_csv(sample, path)
+
 
 if __name__ == "__main__":
     df = dataframe_creation()

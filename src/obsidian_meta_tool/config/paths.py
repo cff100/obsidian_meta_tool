@@ -11,6 +11,7 @@ class DataPaths:
 
     DATA_FOLDER = PROJECT_ROOT_FOLDER / "data"
     GENERAL_DATAFRAME_PATH = DATA_FOLDER / "general_dataframe.parquet"
+    SAMPLE_CSV_PATH = DATA_FOLDER / "sample_dataframe.csv"
 
     # SQL_DATABASE_PATH = str(DATA_FOLDER / "all_files.db")
     # CSV_FOLDER = DATA_FOLDER / "csv"

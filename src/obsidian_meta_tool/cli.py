@@ -2,6 +2,7 @@ import argparse
 
 from obsidian_meta_tool.config.config_structuration import process_configuration
 from obsidian_meta_tool.config.paths import DataPaths
+from obsidian_meta_tool.database.database_creation import dataframe_creation
 
 def main():
     # 1. Cria o orquestrador principal
@@ -47,6 +48,20 @@ def main():
         default=None
     )
 
+    # ==========================================
+    # TASK 3: Criação do DataFrame geral
+    # ==========================================
+    parser_dataframe = subparsers.add_parser(
+        "create-dataframe", 
+        help="Creates the general DataFrame from all vault notes and saves it as a Parquet file."
+    )
+    parser_dataframe.add_argument(
+        "--choice", 
+        type=str, 
+        help="Specify an immediate option number to save the vault (e.g., '3' to save as option_3).", 
+        default=None
+    )
+
     # 3. Lê e interpreta o que o usuário digitou no terminal
     args = parser.parse_args()
 
@@ -64,6 +79,13 @@ def main():
             DataPaths.capture_vault_file_paths()
         print("Paths captured and saved successfully!")
 
+    elif args.command == "create-dataframe":
+        print("Creating general DataFrame...")
+        if args.choice:
+            dataframe_creation(vault_option_digit=args.choice)
+        else:
+            dataframe_creation()
+        print("DataFrame created and saved successfully!")
 
     else:
         # Se o usuário rodar o arquivo sem passar nenhum comando, exibe a ajuda nativa
