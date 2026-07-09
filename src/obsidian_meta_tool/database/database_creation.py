@@ -57,16 +57,16 @@ def save_sample_dataframe_as_csv(df: pd.DataFrame, path: Path) -> None:
     """
     Saves a sample of the DataFrame as a CSV file.
     """
-    sample = df.sample(n=min(100, len(df)))
+    sample = df.sample(n=min(20, len(df)))
     save_dataframe_as_csv(sample, path)
 
 
-if __name__ == "__main__":
-    df = dataframe_creation()
-    print("DataFrame successfully generated. Showing a sample:")
-    #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
-    # print(df["note_frontmatter"])
-    column = "note_initial_folder_name"
-    # print(df[column].to_markdown())
-    print(df[column].value_counts().sample(11))
-    print(df["note_path"][df[column] == "/"].to_markdown())
+# if __name__ == "__main__":
+#     df = dataframe_creation()
+#     print("DataFrame successfully generated. Showing a sample:")
+#     #print(df.sample(n=min(20, len(df)))) # Previne erros se o cofre tiver menos de 20 notas
+#     # print(df["note_frontmatter"])
+#     column = "note_initial_folder_name"
+#     # print(df[column].to_markdown())
+#     print(df[column].value_counts().sample(11))
+#     print(df["note_path"][df[column] == "/"].to_markdown())
