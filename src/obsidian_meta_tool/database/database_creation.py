@@ -8,6 +8,7 @@ from obsidian_meta_tool.io.read import read_file_paths
 from obsidian_meta_tool.config.config_structuration import auto_access_vault_values, ValuesNames
 from obsidian_meta_tool.utils.digit_option import digit_option_creation
 from obsidian_meta_tool.io.save_data import save_dataframe_as_parquet, save_dataframe_as_csv
+from obsidian_meta_tool.database.validate_database import validate_database
 
 def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_OPTION_DIGIT) -> pd.DataFrame:
     """
@@ -25,6 +26,9 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
     all_data = get_categories_values_all_notes(vault_path, notes_txt_path, vault_option_digit)
 
     df = pd.DataFrame(all_data, columns=[c.value for c in CategoriesNames])
+
+    if not validate_database(df):
+        raise ValueError("Database validation failed. Please check the note paths and filenames.")
 
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)

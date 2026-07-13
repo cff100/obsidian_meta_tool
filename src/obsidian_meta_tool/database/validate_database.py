@@ -2,6 +2,17 @@ import pandas as pd
 
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames
 
+def validate_database(df: pd.DataFrame) -> bool:
+    """
+    Validates the database by checking if the note path and note filename are valid.
+    """
+    valid = note_path_validation(df) and note_filename_validation(df)
+    if valid:
+        print("Database validation successful.")
+    else:
+        print("Database validation failed.")
+    return valid
+
 def note_path_validation(df: pd.DataFrame) -> bool:
     """
     Validates if the note path is not None.
