@@ -1,14 +1,16 @@
 import pandas as pd
+from pathlib import Path
 
 from obsidian_meta_tool.database.notes_categories_creation import CategoriesNames
 from obsidian_meta_tool.io.save_data import save_dataframe_as_csv
 from obsidian_meta_tool.config.paths import DataPaths
+from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus
 
 def validate_database(df: pd.DataFrame) -> bool:
     """
     Validates the database by checking if the note path and note filename are valid.
     """
-    valid = all([path_validation(df), filename_validation(df), extension_validation(df)])
+    valid = all([path_validation(df), filename_validation(df), extension_validation(df), frontmatter_status_validation(df)])
     if valid:
         print("Database validation successful.")
     else:
@@ -56,8 +58,8 @@ def extension_validation(df: pd.DataFrame) -> bool:
     Validates if the note extension is None for folders and not None for files.
     """
 
-    folders_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: x.is_dir())]
-    files_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: x.is_file())]
+    folders_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
+    files_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
 
     valid = True
 
@@ -76,3 +78,17 @@ def extension_validation(df: pd.DataFrame) -> bool:
         save_dataframe_as_csv(invalid_files_df, DataPaths.DATA_FOLDER / "invalid_files.csv")
         
     return valid
+
+def frontmatter_status_validation(df: pd.DataFrame) -> bool:
+    """
+    Validates if the frontmatter status is either 'valid' or 'invalid'.
+    """
+    valid_statuses = [status.value for status in FrontmatterStatus]
+    invalid_statuses_df = df[~df[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].isin(valid_statuses)]
+    
+    if not invalid_statuses_df.empty:
+        print("Validation failed: Some frontmatter statuses are invalid.")
+        save_dataframe_as_csv(invalid_statuses_df, DataPaths.DATA_FOLDER / "invalid_frontmatter_statuses.csv")
+        return False
+    
+    return True
