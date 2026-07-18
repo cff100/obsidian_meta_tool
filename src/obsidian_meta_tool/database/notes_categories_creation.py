@@ -9,6 +9,7 @@ from obsidian_meta_tool.frontmatter.yaml_parser import retrieve_yaml_data
 from obsidian_meta_tool.io.read import read_lines
 from obsidian_meta_tool.config.constants import FRONTMATTER_ID
 from obsidian_meta_tool.frontmatter.yaml_parser import FrontmatterStatus
+from obsidian_meta_tool.utils.file_format import is_markdown_file
 
 class CategoriesNames(Enum):
     """Names of the categories used as columns in the general DataFrame."""
@@ -36,12 +37,13 @@ class ObsidianNote:
         self.frontmatter_status: Optional[FrontmatterStatus] = None
         self.frontmatter: Optional[dict[str, Any]] = None
 
-        if self.is_text_file():
+        if is_markdown_file(self.path):
             self._load_file_data()
 
-    def is_text_file(self) -> bool:
-        """Checks if the file is a text file that can be parsed for markdown/YAML."""
-        return self.path.suffix.lower() == '.md'
+    # def is_text_file(self) -> bool:
+    #     """Checks if the file is a text file that can be parsed for markdown/YAML."""
+    #     text_extensions = {".md", ".txt", ".csv", ".json", ".yaml", ".yml"}
+    #     return self.path.suffix.lower() in text_extensions
 
     def _load_file_data(self) -> None:
         """Reads the file and initializes the frontmatter securely."""
@@ -132,28 +134,35 @@ class ObsidianNote:
         """
         Converts the note's properties to a dictionary mapped strictly to CategoriesNames.
         """
-        if not self.is_text_file():
-            # Retorna apenas o caminho e a pasta para arquivos não suportados (ex: .png, .pdf)
-            return {
-                CategoriesNames.NOTE_PATH.value: str(self.path),
-                CategoriesNames.NOTE_INITIAL_FOLDER_NAME.value: self.initial_folder_name,
-                CategoriesNames.NOTE_FILENAME.value: None,
-                CategoriesNames.NOTE_EXTENSION.value: None,
-                CategoriesNames.NOTE_BODY_TAGS.value: None,
-                CategoriesNames.NOTE_OUTGOING_LINKS.value: None,
-                CategoriesNames.NOTE_FRONTMATTER_STATUS.value: None,
-                CategoriesNames.NOTE_FRONTMATTER.value: None
-            }
-        
-        status_value = self.frontmatter_status.value if self.frontmatter_status else None
+
+        if self.path.is_dir():
+            note_filename = None
+            note_extension = None
+            note_body_tags = None
+            note_outgoing_links = None
+            note_frontmatter_status = None
+            note_frontmatter = None
+        else:
+            note_filename = self.filename
+            note_extension = self.extension
+            if is_markdown_file(self.path):
+                note_body_tags = self.body_tags
+                note_outgoing_links = self.outgoing_links
+                note_frontmatter_status = self.frontmatter_status.value if self.frontmatter_status else None
+                note_frontmatter = self.frontmatter
+            else:
+                note_body_tags = None
+                note_outgoing_links = None
+                note_frontmatter_status = None
+                note_frontmatter = None
 
         return {
             CategoriesNames.NOTE_PATH.value: str(self.path),
-            CategoriesNames.NOTE_FILENAME.value: self.filename,
-            CategoriesNames.NOTE_EXTENSION.value: self.extension,
             CategoriesNames.NOTE_INITIAL_FOLDER_NAME.value: self.initial_folder_name,
-            CategoriesNames.NOTE_BODY_TAGS.value: self.body_tags,
-            CategoriesNames.NOTE_OUTGOING_LINKS.value: self.outgoing_links,
-            CategoriesNames.NOTE_FRONTMATTER_STATUS.value: status_value,
-            CategoriesNames.NOTE_FRONTMATTER.value: self.frontmatter
+            CategoriesNames.NOTE_FILENAME.value: note_filename,
+            CategoriesNames.NOTE_EXTENSION.value: note_extension,
+            CategoriesNames.NOTE_BODY_TAGS.value: note_body_tags,
+            CategoriesNames.NOTE_OUTGOING_LINKS.value: note_outgoing_links,
+            CategoriesNames.NOTE_FRONTMATTER_STATUS.value: note_frontmatter_status,
+            CategoriesNames.NOTE_FRONTMATTER.value: note_frontmatter
         }

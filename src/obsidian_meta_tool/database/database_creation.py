@@ -27,14 +27,14 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
 
     df = pd.DataFrame(all_data, columns=[c.value for c in CategoriesNames])
 
-    if not validate_database(df):
-        raise ValueError("Database validation failed. Please check the note paths and filenames.")
-
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)
     save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
     save_sample_dataframe_as_csv(df, DataPaths.SAMPLE_CSV_PATH)
-    
+
+    if not validate_database(df):
+        raise ValueError("Database validation failed. Please check the note paths and filenames.")
+
     return df
 
 

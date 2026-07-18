@@ -30,26 +30,26 @@ def path_validation(df: pd.DataFrame) -> bool:
 
 def filename_validation(df: pd.DataFrame) -> bool:
     """
-    Validates if the note filename is not None if extension is .md and if the note filename is None otherwise.
+    Validates if the note filename is None for folders and if the note filename is not None for files.
     """
-    df_md = df[df[CategoriesNames.NOTE_EXTENSION.value] == ".md"]
-    df_non_md = df[df[CategoriesNames.NOTE_EXTENSION.value] != ".md"]
+    df_folders = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
+    df_files = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
 
     valid = True
 
-    if df_md[CategoriesNames.NOTE_FILENAME.value].isnull().any():
-        print("Validation failed: Some .md files have a None filename.")
+    if df_folders[CategoriesNames.NOTE_FILENAME.value].notnull().any():
+        print("Validation failed: Some folders have a non-None filename.")
         valid = False
 
-        invalid_filenames_df = df_md[df_md[CategoriesNames.NOTE_FILENAME.value].isnull()]
-        save_dataframe_as_csv(invalid_filenames_df, DataPaths.DATA_FOLDER / "invalid_filenames.csv")
+        invalid_folder_filenames_df = df_folders[df_folders[CategoriesNames.NOTE_FILENAME.value].notnull()]
+        save_dataframe_as_csv(invalid_folder_filenames_df, DataPaths.DATA_FOLDER / "invalid_folder_filenames.csv")
         
-    if df_non_md[CategoriesNames.NOTE_FILENAME.value].notnull().any():
-        print("Validation failed: Some non-.md files have a non-None filename.")
+    if df_files[CategoriesNames.NOTE_FILENAME.value].isnull().any():
+        print("Validation failed: Some files have a None filename.")
         valid = False
 
-        invalid_non_md_filenames_df = df_non_md[df_non_md[CategoriesNames.NOTE_FILENAME.value].notnull()]
-        save_dataframe_as_csv(invalid_non_md_filenames_df, DataPaths.DATA_FOLDER / "invalid_non_md_filenames.csv")
+        invalid_file_filenames_df = df_files[df_files[CategoriesNames.NOTE_FILENAME.value].isnull()]
+        save_dataframe_as_csv(invalid_file_filenames_df, DataPaths.DATA_FOLDER / "invalid_file_filenames.csv")
         
     return valid
 
@@ -58,23 +58,23 @@ def extension_validation(df: pd.DataFrame) -> bool:
     Validates if the note extension is None for folders and not None for files.
     """
 
-    folders_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
-    files_df = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
+    df_folders = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
+    df_files = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
 
     valid = True
 
-    if folders_df[CategoriesNames.NOTE_EXTENSION.value].notnull().any():
+    if df_folders[CategoriesNames.NOTE_EXTENSION.value].notnull().any():
         print("Validation failed: Some folders have a non-None extension.")
         valid = False
 
-        invalid_folders_df = folders_df[folders_df[CategoriesNames.NOTE_EXTENSION.value].notnull()]
+        invalid_folders_df = df_folders[df_folders[CategoriesNames.NOTE_EXTENSION.value].notnull()]
         save_dataframe_as_csv(invalid_folders_df, DataPaths.DATA_FOLDER / "invalid_folders.csv")
 
-    if files_df[CategoriesNames.NOTE_EXTENSION.value].isnull().any():
+    if df_files[CategoriesNames.NOTE_EXTENSION.value].isnull().any():
         print("Validation failed: Some files have a None extension.")
         valid = False
 
-        invalid_files_df = files_df[files_df[CategoriesNames.NOTE_EXTENSION.value].isnull()]
+        invalid_files_df = df_files[df_files[CategoriesNames.NOTE_EXTENSION.value].isnull()]
         save_dataframe_as_csv(invalid_files_df, DataPaths.DATA_FOLDER / "invalid_files.csv")
         
     return valid
