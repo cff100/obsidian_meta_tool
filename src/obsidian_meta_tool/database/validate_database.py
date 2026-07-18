@@ -10,7 +10,13 @@ def validate_database(df: pd.DataFrame) -> bool:
     """
     Validates the database by checking if the note path and note filename are valid.
     """
-    valid = all([path_validation(df), filename_validation(df), extension_validation(df), frontmatter_status_validation(df)])
+
+    df_folders = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
+    df_files = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
+    df_md_files = df_files[df_files[CategoriesNames.NOTE_EXTENSION.value] == '.md']
+    df_non_md = df_files[df_files[CategoriesNames.NOTE_EXTENSION.value] != '.md']
+
+    valid = all([path_validation(df), filename_validation(df_folders, df_files), extension_validation(df_folders, df_files), frontmatter_status_validation(df_md_files, df_non_md)])
     if valid:
         print("Database validation successful.")
     else:
@@ -28,12 +34,10 @@ def path_validation(df: pd.DataFrame) -> bool:
         save_dataframe_as_csv(invalid_paths_df, DataPaths.DATA_FOLDER / "invalid_paths.csv")
     return valid
 
-def filename_validation(df: pd.DataFrame) -> bool:
+def filename_validation(df_folders: pd.DataFrame, df_files: pd.DataFrame) -> bool:
     """
     Validates if the note filename is None for folders and if the note filename is not None for files.
     """
-    df_folders = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
-    df_files = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
 
     valid = True
 
@@ -53,13 +57,10 @@ def filename_validation(df: pd.DataFrame) -> bool:
         
     return valid
 
-def extension_validation(df: pd.DataFrame) -> bool:
+def extension_validation(df_folders: pd.DataFrame, df_files: pd.DataFrame) -> bool:
     """
     Validates if the note extension is None for folders and not None for files.
     """
-
-    df_folders = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_dir())]
-    df_files = df[df[CategoriesNames.NOTE_PATH.value].apply(lambda x: Path(x).is_file())]
 
     valid = True
 
@@ -79,16 +80,28 @@ def extension_validation(df: pd.DataFrame) -> bool:
         
     return valid
 
-def frontmatter_status_validation(df: pd.DataFrame) -> bool:
+def frontmatter_status_validation(df_md_files: pd.DataFrame, df_non_md: pd.DataFrame) -> bool:
     """
-    Validates if the frontmatter status is either 'valid' or 'invalid'.
+    Validates if the frontmatter status is one of the valid statuses defined in FrontmatterStatus for .md files and None otherwise.
     """
     valid_statuses = [status.value for status in FrontmatterStatus]
-    invalid_statuses_df = df[~df[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].isin(valid_statuses)]
+    # invalid_statuses_df = df_md_files[~df_md_files[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].isin(valid_statuses)]
+
+    valid = True
     
-    if not invalid_statuses_df.empty:
-        print("Validation failed: Some frontmatter statuses are invalid.")
-        save_dataframe_as_csv(invalid_statuses_df, DataPaths.DATA_FOLDER / "invalid_frontmatter_statuses.csv")
-        return False
+    if df_non_md[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].notnull().any():
+        print("Validation failed: Some non-markdown files or folders have a non-None frontmatter status.")
+        valid = False
+
+        invalid_non_md_df = df_non_md[df_non_md[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].notnull()]
+        save_dataframe_as_csv(invalid_non_md_df, DataPaths.DATA_FOLDER / "invalid_non_md_frontmatter_status.csv")
+
+    if df_md_files[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].isin(valid_statuses).all() is False:
+        print("Validation failed: Some markdown files have an invalid frontmatter status.")
+        valid = False
+
+        invalid_md_df = df_md_files[~df_md_files[CategoriesNames.NOTE_FRONTMATTER_STATUS.value].isin(valid_statuses)]
+        save_dataframe_as_csv(invalid_md_df, DataPaths.DATA_FOLDER / "invalid_md_frontmatter_status.csv")
+
     
-    return True
+    return valid

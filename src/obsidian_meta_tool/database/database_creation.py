@@ -30,6 +30,7 @@ def dataframe_creation(vault_option_digit: str = ConfigNames.DEFAULT_VAULT_NAME_
     # Garantindo que a pasta do DataFrame exista antes de salvar
     DataPaths.GENERAL_DATAFRAME_PATH.parent.mkdir(parents=True, exist_ok=True)
     save_dataframe_as_parquet(df, DataPaths.GENERAL_DATAFRAME_PATH)
+    save_dataframe_as_csv(df, DataPaths.GENERAL_CSV_PATH)
     save_sample_dataframe_as_csv(df, DataPaths.SAMPLE_CSV_PATH)
 
     if not validate_database(df):

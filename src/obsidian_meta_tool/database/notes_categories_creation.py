@@ -111,7 +111,7 @@ class ObsidianNote:
         for line in self._lines:
             if "#" in line:
                 for expression in line.split():
-                    if expression.startswith("#") and len(expression) > 1:
+                    if expression.startswith("#") and not expression.endswith("#"):
                         body_tags.append(expression[1:])
         
         return list(set(body_tags)) if body_tags else None
