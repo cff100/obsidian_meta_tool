@@ -50,7 +50,7 @@ def mock_dependencies(monkeypatch):
         updated = lines[:start] + new_lines + lines[end + 1:]
         return updated
 
-    def mock_write_lines(path: Path, lines: list[str]):
+    def mock_write_lines(path: Path, lines: list[str], create_parents: bool = True):
         write_lines_log[path] = lines
 
     # Injecting the mocked utilities into the module namespaces
